@@ -9,10 +9,10 @@ template <class T>
 struct Node {
     int info;
     T* data;
-    struct Node* left_son;
-    struct Node* right_son;
+    struct Node* father;
+    struct Node* leftSon;
+    struct Node* rightSon;
 };
-
 
 
 #endif //WET1DS_NODE_H
