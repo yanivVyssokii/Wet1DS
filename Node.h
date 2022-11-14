@@ -10,8 +10,9 @@ struct Node {
     int info;
     T* data;
     struct Node* left_son;
-    struct Node* right_son
+    struct Node* right_son;
 };
+
 
 
 #endif //WET1DS_NODE_H

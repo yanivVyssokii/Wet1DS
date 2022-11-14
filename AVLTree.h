@@ -4,7 +4,7 @@
 
 #ifndef WET1DS_AVLTREE_H
 #define WET1DS_AVLTREE_H
-
+#include "Node.h"
 template <class T>
 class AVLTree {
 private:
