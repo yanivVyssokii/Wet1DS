@@ -1,0 +1,14 @@
+//
+// Created by User on 11/15/2022.
+//
+
+#ifndef WET1DS_AVLTREE_H
+#define WET1DS_AVLTREE_H
+
+
+class AVLTree {
+
+};
+
+
+#endif //WET1DS_AVLTREE_H
