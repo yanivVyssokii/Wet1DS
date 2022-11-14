@@ -7,7 +7,20 @@
 
 
 class Player {
+private:
+    int m_playerId;
 
+    int m_teamId;
+
+    int m_gamesPlayed;
+
+    int m_goals;
+
+    int m_cards;
+
+    bool m_goalKeeper;
+
+public:
 };
 
 
