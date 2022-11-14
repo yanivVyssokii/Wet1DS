@@ -21,11 +21,16 @@
 
 class world_cup_t {
 private:
-    AVLTree<Team> teams;
+    AVLTree<Team> m_teams;
 
-    AVLTree<Player> players;
+    AVLTree<Player> m_players;
+
+    int m_topScorerId;
+
+    int m_playerCount;
 
     int playerCount;
+
 public:
 	// <DO-NOT-MODIFY> {
 	

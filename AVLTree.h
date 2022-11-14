@@ -8,8 +8,9 @@
 template <class T>
 class AVLTree {
 private:
-    Node<T> head;
+    Node<T>* m_head;
 public:
+    AVLTree();
 
     Node<T>* find(int id);
 

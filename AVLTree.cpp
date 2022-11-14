@@ -3,3 +3,7 @@
 //
 
 #include "AVLTree.h"
+template <class T>
+AVLTree::AVLTree<T>(){
+    m_head=nullptr;
+};
