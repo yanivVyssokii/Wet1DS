@@ -14,13 +14,18 @@
 
 #ifndef WORLDCUP23A1_H_
 #define WORLDCUP23A1_H_
-
+#include "AVLTree.h"
+#include "Player.h"
+#include "Team.h"
 #include "wet1util.h"
 
 class world_cup_t {
 private:
+    AVLTree<Team> teams;
 
-	
+    AVLTree<Player> players;
+
+    int playerCount;
 public:
 	// <DO-NOT-MODIFY> {
 	
