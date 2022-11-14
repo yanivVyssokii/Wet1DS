@@ -5,9 +5,11 @@
 #ifndef WET1DS_AVLTREE_H
 #define WET1DS_AVLTREE_H
 
-
+template <class T>
 class AVLTree {
+private:
 
+public:
 };
 
 
