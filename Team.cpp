@@ -3,3 +3,7 @@
 //
 
 #include "Team.h"
+
+Team::Team(int teamId, int point) {
+
+}
