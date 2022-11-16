@@ -15,28 +15,26 @@ public:
 
     Node<T>* find(int id);
 
-   void insert(Node<T>& root,T& value);
+    int calheight(Node<T> *p);
 
-    void remove(Node<T>& node);
+    int bf( Node<T> *n);
 
-    void merge(Node<T>& node1,Node<T>& node2 );
+    Node<T> * llrotation(Node<T> *n);
 
-    Node<T>* insert(Node<T>* root, T* value);
+    Node<T> * rrrotation(Node<T> *n);
 
-    int height(Node<T>* temp);
+    Node<T> * rlrotation(Node<T> *n);
 
-    int diff(Node<T>* temp);
+    Node<T> * lrrotation(Node<T> *n);
 
-    Node<T>* rr_rotation(Node<T>* parent);
+    Node<T>* insert(Node<T> *r,int data);
 
-    Node<T>* ll_rotation(Node<T>* parent);
+    Node<T> * deleteNode(Node<T> *p,int data);
 
-    Node<T>* lr_rotation(Node<T>* parent);
+    Node<T> inpre(Node<T> p);
 
-    Node<T>* rl_rotation(Node<T>* parent);
-
-    Node<T>* balance(Node<T>* temp);
-}
+    Node<T> insuc(Node<T> p);
+};
 
 
 #endif //WET1DS_AVLTREE_H
