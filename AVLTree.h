@@ -9,18 +9,19 @@
 template <class T>
 class AVLTree {
 private:
-    Node<T>* m_head;
+    Node<T>* m_root;
 public:
     AVLTree();
 
     Node<T>* find(int id);
 
-    void add(Node<T>& node);
+   void insert(Node<T>& root,T& value);
 
     void remove(Node<T>& node);
 
     void merge(Node<T>& node1,Node<T>& node2 );
 
+    Node<T>* insert(Node<T>* root, T* value);
 }
 
 
