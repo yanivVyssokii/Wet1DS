@@ -22,6 +22,20 @@ public:
     void merge(Node<T>& node1,Node<T>& node2 );
 
     Node<T>* insert(Node<T>* root, T* value);
+
+    int height(Node<T>* temp);
+
+    int diff(Node<T>* temp);
+
+    Node<T>* rr_rotation(Node<T>* parent);
+
+    Node<T>* ll_rotation(Node<T>* parent);
+
+    Node<T>* lr_rotation(Node<T>* parent);
+
+    Node<T>* rl_rotation(Node<T>* parent);
+
+    Node<T>* balance(Node<T>* temp);
 }
 
 

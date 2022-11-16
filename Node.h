@@ -8,6 +8,7 @@
 template <class T>
 struct Node {
     int info;
+    int height;
     T* data;
     struct Node* father;
     struct Node* leftSon;
