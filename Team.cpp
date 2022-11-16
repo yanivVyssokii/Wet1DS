@@ -4,12 +4,12 @@
 
 #include "Team.h"
 
-Team::Team(int teamId, int point): m_teamId(teamId), m_points(point), m_playerCount(0),
+Team::Team(int teamId, int point): m_id(teamId), m_points(point), m_playerCount(0),
                                     m_powerRank(0), m_topScorerId(NULLPLAYER), m_players(new AVLTree<Player>())
 {}
 
-int Team::getTeamId() const {
-    return m_teamId;
+int Team::getId() const {
+    return m_id;
 }
 
 int Team::getPoints() const {
@@ -48,6 +48,6 @@ void Team::increasePlayerCount() {
     m_playerCount++;
 }
 
-void Team::addPlayer(const Player &player) {
-    //m_players->add(new Node<Player>(player.m_teamId,)) TODO finish adding
+void Team::addPlayer(Player* player) {
+    m_players->add(*(new Node<Player>(player->getId(),player, nullptr, nullptr, nullptr)));
 }

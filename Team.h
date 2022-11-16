@@ -12,7 +12,7 @@
 
 class Team {
 private:
-    int m_teamId;
+    int m_id;
 
     int m_points;
 
@@ -26,7 +26,7 @@ private:
 public:
     Team(int teamId, int point);
 
-    int getTeamId() const;
+    int getId() const;
 
     int getPoints() const;
 
@@ -46,7 +46,7 @@ public:
 
     void increasePlayerCount();
 
-    void addPlayer(const Player& player);
+    void addPlayer(Player* player);
 };
 
 

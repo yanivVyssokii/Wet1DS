@@ -8,7 +8,7 @@
 
 class Player {
 private:
-    int m_playerId;
+    int m_id;
 
     int m_teamId;
 
@@ -21,6 +21,25 @@ private:
     bool m_goalKeeper;
 
 public:
+    Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper);
+
+    int getId() const;
+
+    int getTeamId() const;
+
+    int HowMuchGamesPlayed() const;
+
+    int getPlayerCards() const;
+
+    bool isGoalKeeper() const;
+
+    void addGamesPlayed(int games);
+
+    void addGoals(int goals);
+
+    void addCards(int cards);
+
+    void changeGoalKeeper(bool isGoalKeeper);
 };
 
 
