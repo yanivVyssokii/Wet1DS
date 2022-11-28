@@ -40,6 +40,8 @@ public:
 
     int getTeamGamesBeforeJoin() const;
 
+    int getGamesPlayed() const;
+
     Team* getTeam() const;
 
     bool isGoalKeeper() const;

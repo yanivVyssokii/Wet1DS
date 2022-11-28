@@ -65,3 +65,7 @@ int Player::getTeamGamesBeforeJoin() const {
     return m_teamGamesBeforeJoin;
 }
 
+int Player::getGamesPlayed() const {
+    return m_gamesPlayed;
+}
+

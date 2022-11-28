@@ -200,8 +200,21 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
 
 output_t<int> world_cup_t::get_num_played_games(int playerId)
 {
-	// TODO: Your code goes here
-	return 22;
+	if (playerId<=0){
+        return output_t<int>(StatusType::INVALID_INPUT);
+    }
+    try{
+        Player *newPlayer = new Player(playerId,0,0,0,0, false);
+        Node<Player>* playerNode = m_playersById->find(*newPlayer);
+        if (!playerNode){
+            delete newPlayer;
+            return output_t<int>(StatusType::FAILURE);
+        }
+        return output_t<int>(playerNode->data->getTeam()->getGamesPlayed()-playerNode->data->getTeamGamesBeforeJoin()
+                                    +playerNode->data->getGamesPlayed());
+    }catch (...){
+        return output_t<int>(StatusType::ALLOCATION_ERROR);
+    }
 }
 
 output_t<int> world_cup_t::get_team_points(int teamId)
