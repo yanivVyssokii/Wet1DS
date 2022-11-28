@@ -5,6 +5,7 @@
 #ifndef WET1DS_PLAYER_H
 #define WET1DS_PLAYER_H
 
+#include "Team.h"
 
 class Player {
 private:
@@ -18,7 +19,11 @@ private:
 
     int m_cards;
 
+    int m_teamGamesBeforeJoin;
+
     bool m_goalKeeper;
+
+    Team* m_team;
 
 public:
     Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper);
@@ -31,6 +36,12 @@ public:
 
     int getPlayerCards() const;
 
+    int getGoals() const;
+
+    int getTeamGamesBeforeJoin() const;
+
+    Team* getTeam() const;
+
     bool isGoalKeeper() const;
 
     void addGamesPlayed(int games);
@@ -40,7 +51,29 @@ public:
     void addCards(int cards);
 
     void changeGoalKeeper(bool isGoalKeeper);
+
+    void setTeam(Team* newTeam);
+
+    void setTeamGamesBeforeJoin(int teamGamesBeforeJoin) ;
 };
 
+bool isBiggerId(Player& p1, Player& p2){
+    return p1.getId()>p2.getId();
+}
 
+bool isBiggerStats(Player& p1, Player& p2){
+    if (p1.getGoals()>p2.getGoals()){
+        return true;
+    }
+    if (p2.getGoals()>p1.getGoals()){
+        return false;
+    }
+    if (p2.getPlayerCards()>p1.getPlayerCards()){
+        return true;
+    }
+    if (p1.getPlayerCards()>p2.getPlayerCards()){
+        return false;
+    }
+    return p1.getId()>p2.getId();
+}
 #endif //WET1DS_PLAYER_H

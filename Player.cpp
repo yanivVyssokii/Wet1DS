@@ -42,5 +42,26 @@ void Player::changeGoalKeeper(bool isGoalKeeper) {
 
 Player::Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper):
                 m_id(playerId), m_teamId(teamId), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards),
-                m_goalKeeper(goalKeeper)
+                m_teamGamesBeforeJoin(0), m_goalKeeper(goalKeeper), m_team(nullptr)
 {}
+
+int Player::getGoals() const {
+    return m_goals;
+}
+
+void Player::setTeam(Team *newTeam) {
+    m_team=newTeam;
+}
+
+Team *Player::getTeam() const {
+    return m_team;
+}
+
+void Player::setTeamGamesBeforeJoin(int teamGamesBeforeJoin) {
+    m_teamGamesBeforeJoin=teamGamesBeforeJoin;
+}
+
+int Player::getTeamGamesBeforeJoin() const {
+    return m_teamGamesBeforeJoin;
+}
+

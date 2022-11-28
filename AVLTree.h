@@ -5,6 +5,7 @@
 #ifndef WET1DS_AVLTREE_H
 #define WET1DS_AVLTREE_H
 #include "Node.h"
+#include "stdio.h"
 #include "wet1util.h"
 template <class T>
 class AVLTree {
@@ -17,8 +18,6 @@ public:
     AVLTree(bool (*comparator)(T& t1, T& t2));
 
     int getSize();
-
-    bool isBigger(T& t1, T& t2);
 
     Node<T>* find(const T& target);
 

@@ -3,6 +3,7 @@
 //
 
 #include "AVLTree.h"
+#include "stdio.h"
 template<class T>
 AVLTree<T>::AVLTree(bool (*comparator)(T& t1, T& t2)){
     m_comparator=comparator;
@@ -286,8 +287,8 @@ void AVLTree<T>::printInOrder(Node<T> *p) {
         return;
     }
     this->printInOrder(p->left);
-    std::cout<<"value:"<<p->data->getId()<<std::endl;
-    std::cout<<"height:"<<p->height<< std::endl;
+    //std::cout<<"value:"<<p->data->getId()<<std::endl;
+    //std::cout<<"height:"<<p->height<< std::endl;
     this->printInOrder(p->right);
 }
 

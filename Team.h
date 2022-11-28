@@ -22,7 +22,13 @@ private:
 
     int m_playerCount;
 
-    AVLTree<Player>* m_players;
+    int m_goalKeepersCount;
+
+    int m_gamesCounter;
+
+    AVLTree<Player>* m_playersById;
+
+    AVLTree<Player>* m_playersByStats;
 public:
     Team(int teamId, int point);
 
@@ -36,7 +42,13 @@ public:
 
     int getPlayerCount() const;
 
-    AVLTree<Player>* getPlayers() const;
+    int getGoalKeepersCount() const;
+
+    int getGamesPlayed() const;
+
+    AVLTree<Player>* getPlayersById() const;
+
+    AVLTree<Player>* getPlayersByStats() const;
 
     void addPoints(int points);
 
@@ -44,9 +56,13 @@ public:
 
     void setTopScorerId(int topScorerId);
 
-    void increasePlayerCount();
+    void increasePlayerCount(int extra);
 
     void addPlayer(Player* player);
+
+    void addGoalKeeper(int extra);
+
+    void addGamePlayed();
 };
 
 
