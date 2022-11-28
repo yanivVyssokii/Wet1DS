@@ -11,14 +11,21 @@ struct Node {
     int height;
     T* data;
     struct Node* father;
-    struct Node* leftSon;
-    struct Node* rightSon;
+    struct Node* left;
+    struct Node* right;
     Node(int info, T* data, struct Node* father, struct Node* leftSon, struct Node* rightSon);
+    Node();
 };
 
 template<class T>
-Node<T>::Node(int info, T *data, struct Node *father, struct Node *leftSon, struct Node *rightSon):
-        info(info), data(data), father(father),leftSon(leftSon),rightSon(rightSon){
+Node<T>::Node(int info, T *data, struct Node *father, struct Node *left, struct Node *right):
+        info(info),height(0), data(data), father(father),left(left),right(right){
+
+}
+
+template<class T>
+Node<T>::Node():
+        info(0),height(0), data(nullptr), father(nullptr),left(nullptr),right(nullptr){
 
 }
 

@@ -49,5 +49,5 @@ void Team::increasePlayerCount() {
 }
 
 void Team::addPlayer(Player* player) {
-    m_players->add(*(new Node<Player>(player->getId(),player, nullptr, nullptr, nullptr)));
+    m_players->insert(*(new Node<Player>(player->getId(),player, nullptr, nullptr, nullptr)));
 }
