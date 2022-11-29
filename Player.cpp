@@ -68,4 +68,23 @@ int Player::getTeamGamesBeforeJoin() const {
 int Player::getGamesPlayed() const {
     return m_gamesPlayed;
 }
+bool isBiggerId(Player& p1, Player& p2){
+    return p1.getId()>p2.getId();
+}
+
+bool isBiggerStats(Player& p1, Player& p2){
+    if (p1.getGoals()>p2.getGoals()){
+        return true;
+    }
+    if (p2.getGoals()>p1.getGoals()){
+        return false;
+    }
+    if (p2.getPlayerCards()>p1.getPlayerCards()){
+        return true;
+    }
+    if (p1.getPlayerCards()>p2.getPlayerCards()){
+        return false;
+    }
+    return p1.getId()>p2.getId();
+}
 

@@ -19,7 +19,7 @@ public:
 
     int getSize();
 
-    Node<T>* find(const T& target);
+    Node<T>* find( T& target);
 
     int calheight(Node<T> *p);
 
@@ -66,15 +66,15 @@ AVLTree<T>::AVLTree(bool (*comparator)(T& t1, T& t2)){
 }
 
 template<class T>
-Node<T> *AVLTree<T>::find(const T& target) {
+Node<T> *AVLTree<T>::find( T& target) {
     Node<T> *temp = m_root;
     while (temp != nullptr) {
-        if (!m_comparator(temp,target)&&!m_comparator(target,temp))
-            return m_root->data;
-        if (m_comparator(target,temp))
-            temp = temp->leftSon;
+        if (!m_comparator(*(temp->data),target)&&!m_comparator(target,*(temp->data)))
+            return m_root;
+        if (m_comparator(target,*(temp->data)))
+            temp = temp->left;
         else
-            temp = temp->rightSon;
+            temp = temp->right;
     }
     return nullptr;
 }

@@ -224,6 +224,7 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 {
+    return StatusType::SUCCESS;
 }
 
 output_t<int> world_cup_t::get_top_scorer(int teamId)

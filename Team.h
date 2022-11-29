@@ -1,7 +1,6 @@
 //
 // Created by User on 11/15/2022.
 //
-
 #ifndef WET1DS_TEAM_H
 #define WET1DS_TEAM_H
 
@@ -10,6 +9,7 @@
 #include "AVLTree.h"
 #include "Player.h"
 
+class Player;
 class Team {
 private:
     int m_id;
