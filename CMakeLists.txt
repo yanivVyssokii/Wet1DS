@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(.)
 
 add_executable(Wet1DS
-        AVLTree.cpp
         AVLTree.h
         main23a1.cpp
         Node.h
