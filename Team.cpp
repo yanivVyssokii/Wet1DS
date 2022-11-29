@@ -5,7 +5,7 @@
 #include "Team.h"
 
 Team::Team(int teamId, int point): m_id(teamId), m_points(point), m_playerCount(0),
-                                    m_powerRank(0), m_topScorerId(NULLPLAYER),m_goalKeepersCount(0),
+                                    m_powerRank(0), m_topScorerId(NULLPLAYER), m_topScorerGoals(0),m_goalKeepersCount(0),
                                     m_gamesCounter(0), m_playersById(new AVLTree<Player>(isBiggerId)),
                                     m_playersByStats(new AVLTree<Player>(isBiggerStats))
 {}
@@ -75,4 +75,20 @@ int Team::getGamesPlayed() const {
 
 void Team::addGamePlayed() {
     m_gamesCounter++;
+}
+
+void Team::setPlayersById(AVLTree<Player> *playersById) {
+    m_playersById = playersById;
+}
+
+void Team::setPlayersByStats(AVLTree<Player> *playersByStats) {
+    m_playersByStats = playersByStats;
+}
+
+void Team::setTopScorerGoals(int goals) {
+    m_topScorerGoals=goals;
+}
+
+int Team::getTopScorerGoals() const {
+    return m_topScorerGoals;
 }

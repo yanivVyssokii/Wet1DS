@@ -25,7 +25,7 @@ private:
     Team* m_team;
 
 public:
-    Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper);
+    Player(int playerId=0, int teamId=0, int gamesPlayed=0, int goals=0, int cards=0, bool goalKeeper=false);
 
     int getId() const;
 

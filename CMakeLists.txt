@@ -9,11 +9,10 @@ add_executable(Wet1DS
         AVLTree.h
         main23a1.cpp
         Node.h
-        Node.cpp
         Player.cpp
         Player.h
         Team.cpp
         Team.h
         wet1util.h
         worldcup23a1.cpp
-        worldcup23a1.h Node.cpp)
+        worldcup23a1.h)

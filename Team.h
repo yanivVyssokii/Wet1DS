@@ -20,6 +20,8 @@ private:
 
     int m_topScorerId;
 
+    int m_topScorerGoals;
+
     int m_playerCount;
 
     int m_goalKeepersCount;
@@ -46,6 +48,8 @@ public:
 
     int getGamesPlayed() const;
 
+    int getTopScorerGoals() const;
+
     AVLTree<Player>* getPlayersById() const;
 
     AVLTree<Player>* getPlayersByStats() const;
@@ -56,6 +60,10 @@ public:
 
     void setTopScorerId(int topScorerId);
 
+    void setPlayersById(AVLTree<Player>* playersById);
+
+    void setPlayersByStats(AVLTree<Player>* playersByStats);
+
     void increasePlayerCount(int extra);
 
     void addPlayer(Player* player);
@@ -63,6 +71,10 @@ public:
     void addGoalKeeper(int extra);
 
     void addGamePlayed();
+
+    void setTopScorerGoals(int goals);
+
+
 };
 
 

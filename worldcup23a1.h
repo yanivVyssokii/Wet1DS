@@ -29,6 +29,8 @@ private:
 
     int m_topScorerId;
 
+    int m_topScorerGoals;
+
     int m_playerCount;
 public:
 	// <DO-NOT-MODIFY> {
