@@ -10,7 +10,6 @@ world_cup_t::~world_cup_t()
 	// TODO: Your code goes here
 }
 
-
 StatusType world_cup_t::add_team(int teamId, int points)
 {
     if (teamId<=0||points<0){
@@ -225,8 +224,6 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 {
-	// TODO: Your code goes here
-	return StatusType::SUCCESS;
 }
 
 output_t<int> world_cup_t::get_top_scorer(int teamId)
