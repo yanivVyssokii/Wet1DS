@@ -401,7 +401,7 @@ AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
             finalArr[i]=arr1[j];
             j++;
         }
-        else if (t1->m_comparator(*(arr1[j].data),*(arr2[k].data))){
+        else if (t1->m_comparator(*(arr1[j]->data),*(arr2[k]->data))){
             finalArr[i]=arr2[k];
             k++;
         }
