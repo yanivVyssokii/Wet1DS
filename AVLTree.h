@@ -409,7 +409,7 @@ AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
             finalArr[i]=arr1[j];
             j++;
         }
-    }
+    }//hi
     int height=1;
     int temp=sum;
     while (temp>1){
