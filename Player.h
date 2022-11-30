@@ -22,10 +22,16 @@ private:
 
     bool m_goalKeeper;
 
+    Player* m_closestRight;
+
+    Player* m_closestLeft;
+
     Team* m_team;
 
 public:
     Player(int playerId=0, int teamId=0, int gamesPlayed=0, int goals=0, int cards=0, bool goalKeeper=false);
+
+    Player(const Player& other);
 
     int getId() const;
 
@@ -41,6 +47,10 @@ public:
 
     int getGamesPlayed() const;
 
+    Player* getClosestPlayerRight() const;
+
+    Player* getClosestPlayerLeft() const;
+
     Team* getTeam() const;
 
     bool isGoalKeeper() const;
@@ -54,6 +64,10 @@ public:
     void changeGoalKeeper(bool isGoalKeeper);
 
     void setTeam(Team* newTeam);
+
+    void setClosestPlayerRight(Player* newClosest);
+
+    void setClosestPlayerLeft(Player* newClosest);
 
     void setTeamGamesBeforeJoin(int teamGamesBeforeJoin) ;
 };

@@ -41,15 +41,20 @@ public:
 
     Node<T>* insuc(Node<T>* p);
 
-    void inOrder(Node<T> *p, Node<T>* arr, int* index);
+    void inOrder(Node<T> *p, Node<T>** arr, int* index);
 
-    void fillInOrder(Node<T> *p, Node<T>* arr, int* index, int sizeOfArr);
+    void fillInOrder(Node<T> *p, Node<T>** arr, int* index, int sizeOfArr);
 
     void printInOrder(Node<T> *p);
 
     Node<T>* getRoot();
 
     Node<T>* createEmptyTree(Node<T>* r,int height);
+
+    Node<T>* findClosestBigger(Node<T> *p);
+
+    Node<T>* findClosestSmaller(Node<T> *p);
+
 };
 
 template<class T>
@@ -319,16 +324,16 @@ Node<T>* AVLTree<T>::insuc(Node<T>* p){
 }
 
 template<class T>
-void AVLTree<T>::inOrder(Node<T> *p, Node<T>* arr, int* index) {
+void AVLTree<T>::inOrder(Node<T> *p, Node<T>** arr, int* index) {
     if (p->left== nullptr&&p->right== nullptr){
-        arr[*index]=*p;
+        arr[*index]=p;
         *index=*index+1;
         return;
     }
     if (p->left!= nullptr) {
         this->inOrder(p->left, arr, index);
     }
-    arr[*index]=*p;
+    arr[*index]=p;
     *index=*index+1;
     if (p->right!= nullptr) {
         this->inOrder(p->right, arr, index);
@@ -348,7 +353,7 @@ void AVLTree<T>::printInOrder(Node<T> *p) {
 
 
 template<class T>
-void AVLTree<T>::fillInOrder(Node<T> *p, Node<T>* arr, int* index, int sizeOfArr) {
+void AVLTree<T>::fillInOrder(Node<T> *p, Node<T>** arr, int* index, int sizeOfArr) {
     if (p->left== nullptr&&p->right== nullptr){
         if (*index>=sizeOfArr){
             delete p;
@@ -356,15 +361,15 @@ void AVLTree<T>::fillInOrder(Node<T> *p, Node<T>* arr, int* index, int sizeOfArr
             *index=*index+1;
             return;
         }
-        p->data=arr[*index].data;
-        p->info=arr[*index].info;
+        p->data=arr[*index]->data;
+        p->info=arr[*index]->info;
         *index=*index+1;
         p->height= calheight(p);
         return;
     }
     this->fillInOrder(p->left,arr,index,sizeOfArr);
-    p->data=arr[*index].data;
-    p->info=arr[*index].info;
+    p->data=arr[*index]->data;
+    p->info=arr[*index]->info;
     *index=*index+1;
     this->fillInOrder(p->right,arr,index,sizeOfArr);
     p->height= calheight(p);
@@ -379,13 +384,13 @@ Node<T> *AVLTree<T>::getRoot() {
 template<class T>
 AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
     int sum=t1->getSize()+t2->getSize();
-    Node<T>* arr1 = new Node<T>[t1->getSize()];
-    Node<T>* arr2 = new Node<T>[t2->getSize()];
+    Node<T>** arr1 = new Node<T>*[t1->getSize()];
+    Node<T>** arr2 = new Node<T>*[t2->getSize()];
     int index=0;
     t1->inOrder(t1->getRoot(),arr1,&index);
     index=0;
     t2->inOrder(t2->getRoot(),arr2,&index);
-    Node<T>* finalArr=new Node<T>[sum];
+    Node<T>** finalArr=new Node<T>*[sum];
     int j=0,k=0;
     for (int i=0;i<sum;i++){
         if (j>=t1->getSize()){
@@ -439,4 +444,56 @@ template<class T>
 int AVLTree<T>::getSize() {
     return m_size;
 }
+
+template<class T>
+Node<T> *AVLTree<T>::findClosestBigger(Node<T> *p) {
+    if (!p->right){
+        if (p->father->left==p){
+            return p->father;
+        }
+        Node<T>* temp=p->father;
+        while (!temp && temp->father!= nullptr){
+            if (temp->father->left==temp){
+                return temp->father;
+            }
+            temp=temp->father;
+        }
+        return nullptr;
+    }
+    if (p->right){
+        Node<T>* temp=p->right;
+        while (temp->left!= nullptr){
+            temp=temp->left;
+        }
+        return temp;
+    }
+}
+
+template<class T>
+Node<T> *AVLTree<T>::findClosestSmaller(Node<T> *p) {
+    if (!p->left){
+        if (p->father->right==p){
+            return p->father;
+        }
+        Node<T>* temp=p->father;
+        while (temp->father!= nullptr){
+            if (temp->father->right==temp){
+                return temp->father;
+            }
+            temp=temp->father;
+        }
+        return nullptr;
+    }
+    if (p->left){
+        Node<T>* temp=p->left;
+        while (temp->right!= nullptr){
+            temp=temp->right;
+        }
+        return temp;
+    }
+}
+
+
+
+
 #endif //WET1DS_AVLTREE_H

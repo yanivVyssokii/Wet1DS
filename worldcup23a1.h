@@ -23,6 +23,8 @@ class world_cup_t {
 private:
     AVLTree<Team>* m_teams;
 
+    AVLTree<Team>* m_kosherTeams;
+
     AVLTree<Player>* m_playersById;
 
     AVLTree<Player>* m_playersByStats;

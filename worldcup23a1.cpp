@@ -104,6 +104,17 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
             teamPtr->setTopScorerGoals(goals);
             teamPtr->setTopScorerId(playerId);
         }
+        m_playerCount++;
+
+        newPlayer->setClosestPlayerLeft(m_playersByStats->findClosestSmaller(m_playersByStats->find(*newPlayer))->data);
+        newPlayer->setClosestPlayerRight(m_playersByStats->findClosestBigger(m_playersByStats->find(*newPlayer))->data);
+        if (newPlayer->getClosestPlayerLeft()) {
+            newPlayer->getClosestPlayerLeft()->setClosestPlayerRight(newPlayer);
+        }
+        if (newPlayer->getClosestPlayerRight()) {
+            newPlayer->getClosestPlayerRight()->setClosestPlayerLeft(newPlayer);
+        }
+
     } catch (...) {
         delete newPlayer;
         return StatusType::ALLOCATION_ERROR;
@@ -145,7 +156,10 @@ StatusType world_cup_t::remove_player(int playerId)
             playerNode->data->getTeam()->setTopScorerId(playerNode->data->getTeam()->getPlayersByStats()->
                                                              inpre(m_playersByStats->getRoot())->data->getId());
         }
+        playerNode->data->getClosestPlayerLeft()->setClosestPlayerRight(playerNode->data->getClosestPlayerRight());
+        playerNode->data->getClosestPlayerRight()->setClosestPlayerLeft(playerNode->data->getClosestPlayerLeft());
         m_playersById->deleteNode(playerNode,playerNode->data);
+        m_playerCount--;
         delete newPlayer;
     } catch (...) {
         return StatusType::ALLOCATION_ERROR;
@@ -182,6 +196,16 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
             playerNode->data->getTeam()->setTopScorerId(playerId);
         }
         delete newPlayer;
+        newPlayer=playerNode->data;
+        newPlayer->setClosestPlayerLeft(m_playersByStats->findClosestSmaller(m_playersByStats->find(*newPlayer))->data);
+        newPlayer->setClosestPlayerRight(m_playersByStats->findClosestBigger(m_playersByStats->find(*newPlayer))->data);
+        if (newPlayer->getClosestPlayerLeft()) {
+            newPlayer->getClosestPlayerLeft()->setClosestPlayerRight(newPlayer);
+        }
+        if (newPlayer->getClosestPlayerRight()) {
+            newPlayer->getClosestPlayerRight()->setClosestPlayerLeft(newPlayer);
+        }
+
     } catch (...) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -315,7 +339,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
             newTeam->setTopScorerGoals(teamNode2->data->getTopScorerGoals());
             newTeam->setTopScorerId(teamNode2->data->getTopScorerId());
         }
-        Node<Player>* arr = new Node<Player>[newTeam->getPlayerCount()];
+        Node<Player>** arr = new Node<Player>*[newTeam->getPlayerCount()];
         int i=0;
         newTeam->getPlayersById()->inOrder(newTeam->getPlayersById()->getRoot(),arr,&i);
         for (int j=0; j<newTeam->getPlayerCount();j++)
@@ -358,27 +382,140 @@ output_t<int> world_cup_t::get_top_scorer(int teamId)
 
 output_t<int> world_cup_t::get_all_players_count(int teamId)
 {
-	// TODO: Your code goes here
-    static int i = 0;
-    return (i++==0) ? 11 : 2;
+	if (teamId==0){
+        return output_t<int>(StatusType::INVALID_INPUT);
+    }
+    if (teamId<0){
+        return m_playerCount;
+    }
+    try{
+        Team *newTeam = new Team(teamId,0);
+        Node<Team>* teamNode = m_teams->find(*newTeam);
+        if (!teamNode){
+            delete newTeam;
+            return output_t<int>(StatusType::FAILURE);
+        }
+        return output_t<int>(teamNode->data->getPlayerCount());
+    }catch(...){
+        return output_t<int>(StatusType::ALLOCATION_ERROR);
+    }
 }
 
 StatusType world_cup_t::get_all_players(int teamId, int *const output)
 {
-	// TODO: Your code goes here
-    output[0] = 4001;
-    output[1] = 4002;
-	return StatusType::SUCCESS;
+	if (teamId==0||!output){
+        return StatusType::INVALID_INPUT;
+    }
+    if (teamId<0&&m_playerCount<=0){
+        return StatusType::FAILURE;
+    }
+    Node<Player>** arr;
+    Team *newTeam;
+    try {
+        if (teamId < 0) {
+            newTeam= nullptr;
+            arr=new Node<Player>*[m_playerCount];
+            int index=0;
+            m_playersByStats->inOrder(m_playersByStats->getRoot(),arr,&index);
+            for (int i=0; i<m_playerCount; i++){
+                output[i]=arr[i]->data->getId();
+            }
+            delete[] arr;
+            return StatusType::SUCCESS;
+        }
+        newTeam = new Team(teamId,0);
+        Node<Team>* teamNode = m_teams->find(*newTeam);
+        if (!teamNode){
+            delete newTeam;
+            return StatusType::FAILURE;
+        }
+        if (teamNode->data->getPlayerCount()<=0){
+            delete newTeam;
+            return StatusType::FAILURE;
+        }
+        arr=new Node<Player>*[teamNode->data->getPlayerCount()];
+        int index=0;
+        teamNode->data->getPlayersByStats()->inOrder(m_playersByStats->getRoot(),arr,&index);
+        for (int i=0; i<m_playerCount; i++){
+            output[i]=arr[i]->data->getId();
+        }
+        delete newTeam;
+        delete[] arr;
+        return StatusType::SUCCESS;
+    }catch(...){
+        delete newTeam;
+        return StatusType::ALLOCATION_ERROR;
+    }
+}
+
+int abs(int a, int b){
+    if (b-a>0){
+        return b-a;
+    }
+    return a-b;
 }
 
 output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
 {
-	// TODO: Your code goes here
-	return 1006;
+    if (playerId<=0||teamId<=0){
+        return output_t<int>(StatusType::INVALID_INPUT);
+    }
+    Team *newTeam;
+    try{
+        newTeam= nullptr;
+        newTeam = new Team(teamId,0);
+        Node<Team>* teamNode = m_teams->find(*newTeam);
+        Player *newPlayer = new Player(playerId,0,0,0,0, false);
+        Node<Player>* playerNode = teamNode->data->getPlayersById()->find(*newPlayer);
+        Node<Player>* playerNodeStats = teamNode->data->getPlayersByStats()->find(*playerNode->data);
+        if (!playerNode||m_playerCount==1){
+            delete newTeam;
+            delete newPlayer;
+            return output_t<int>(StatusType::FAILURE);
+        }
+        Node<Player>* bigger = m_playersByStats->findClosestBigger(playerNodeStats);//TODO CHAGNE
+        Node<Player>* smaller = m_playersByStats->findClosestSmaller(playerNodeStats);
+
+        delete newTeam;
+        delete newPlayer;
+        if (!smaller)
+            return output_t<int>(bigger->data->getId());
+        if (!bigger)
+            return output_t<int>(smaller->data->getId());
+        if (abs(smaller->data->getGoals(),playerNode->data->getGoals())>abs(bigger->data->getGoals(),
+                                                                            playerNode->data->getGoals())){
+            return output_t<int>(bigger->data->getId());
+        }
+        if (abs(smaller->data->getGoals(),playerNode->data->getGoals())<abs(bigger->data->getGoals(),
+                                                                            playerNode->data->getGoals())){
+            return output_t<int>(smaller->data->getId());
+        }
+        if (abs(smaller->data->getPlayerCards(),playerNode->data->getPlayerCards())>abs(bigger->data->getPlayerCards(),
+                                                                            playerNode->data->getPlayerCards())){
+            return output_t<int>(bigger->data->getId());
+        }
+        if (abs(smaller->data->getPlayerCards(),playerNode->data->getPlayerCards())<abs(bigger->data->getPlayerCards(),
+                                                                            playerNode->data->getPlayerCards())){
+            return output_t<int>(smaller->data->getId());
+        }
+        if (abs(smaller->data->getId(),playerNode->data->getId())>abs(bigger->data->getId(),playerNode->data->getId())){
+            return output_t<int>(bigger->data->getId());
+        }
+        if (abs(smaller->data->getId(),playerNode->data->getId())<abs(bigger->data->getId(),playerNode->data->getId())){
+            return output_t<int>(smaller->data->getId());
+        }
+        return (bigger->data->getId()>smaller->data->getId()? output_t<int>(bigger->data->getId())
+                :output_t<int>(smaller->data->getId()));
+    } catch(...){
+        delete newTeam;
+        return output_t<int>(StatusType::ALLOCATION_ERROR);
+    }
+
 }
 
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 {
+
 	// TODO: Your code goes here
 	return 2;
 }
