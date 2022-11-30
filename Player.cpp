@@ -86,9 +86,6 @@ void Player::setClosestPlayerLeft(Player *newClosest) {
     m_closestLeft=newClosest;
 }
 
-Player::Player(const Player &other):m_id(other.m_id) {
-
-}
 
 bool isBiggerId(Player& p1, Player& p2){
     return p1.getId()>p2.getId();

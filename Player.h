@@ -31,8 +31,6 @@ private:
 public:
     Player(int playerId=0, int teamId=0, int gamesPlayed=0, int goals=0, int cards=0, bool goalKeeper=false);
 
-    Player(const Player& other);
-
     int getId() const;
 
     int getTeamId() const;
