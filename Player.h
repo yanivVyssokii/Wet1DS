@@ -67,10 +67,12 @@ public:
 
     void setClosestPlayerLeft(Player* newClosest);
 
-    void setTeamGamesBeforeJoin(int teamGamesBeforeJoin) ;
+    void setTeamGamesBeforeJoin(int teamGamesBeforeJoin);
+
+    ~Player() = default;
 };
 
-bool isBiggerId(Player& p1, Player& p2);
+bool isBiggerIdPlayer(Player& p1, Player& p2);
 
 bool isBiggerStats(Player& p1, Player& p2);
 #endif //WET1DS_PLAYER_H

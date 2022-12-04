@@ -6,8 +6,8 @@
 
 Team::Team(int teamId, int point): m_id(teamId), m_points(point), m_playerCount(0),
                                     m_powerRank(0), m_topScorerId(NULLPLAYER), m_topScorerGoals(0),m_goalKeepersCount(0),
-                                    m_gamesCounter(0), m_playersById(new AVLTree<Player>(isBiggerId)),
-                                    m_playersByStats(new AVLTree<Player>(isBiggerStats))
+                                    m_gamesCounter(0), m_playersById(new AVLTree<Player>(isBiggerIdPlayer)),
+                                    m_playersByStats(new AVLTree<Player>(isBiggerStats)),m_nextInKosher(nullptr),m_prevInKosher(nullptr)
 {}
 
 int Team::getId() const {
@@ -91,4 +91,29 @@ void Team::setTopScorerGoals(int goals) {
 
 int Team::getTopScorerGoals() const {
     return m_topScorerGoals;
+}
+
+Team *Team::getNextKosher() const {
+    return m_nextInKosher;
+}
+
+Team *Team::getPrevKosher() const {
+    return m_prevInKosher;
+}
+
+void Team::setNextKosher(Team *newClosest) {
+    m_nextInKosher=newClosest;
+}
+
+void Team::setPrevKosher(Team *newClosest) {
+    m_prevInKosher=newClosest;
+}
+
+Team::~Team() {
+    delete m_playersById;
+    delete m_playersByStats;
+}
+
+bool isBiggerIdTeam(Team& p1, Team& p2){
+    return p1.getId()>p2.getId();
 }

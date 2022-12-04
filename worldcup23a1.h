@@ -34,6 +34,9 @@ private:
     int m_topScorerGoals;
 
     int m_playerCount;
+
+    void findRangeTeam(int min, int max, int* size,int* ids, int* points);
+
 public:
 	// <DO-NOT-MODIFY> {
 	

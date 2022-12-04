@@ -15,6 +15,7 @@ struct Node {
     struct Node* right;
     Node(int info, T* data, struct Node* father, struct Node* leftSon, struct Node* rightSon);
     Node();
+    ~Node();
 };
 
 template<class T>
@@ -27,6 +28,13 @@ template<class T>
 Node<T>::Node():
         info(0),height(0), data(nullptr), father(nullptr),left(nullptr),right(nullptr){
 
+}
+
+template<class T>
+Node<T>::~Node() {
+    delete right;
+    delete left;
+    delete data;
 }
 
 

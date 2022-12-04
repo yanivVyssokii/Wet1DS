@@ -55,6 +55,7 @@ public:
 
     Node<T>* findClosestSmaller(Node<T> *p);
 
+    ~AVLTree();
 };
 
 template<class T>
@@ -493,7 +494,10 @@ Node<T> *AVLTree<T>::findClosestSmaller(Node<T> *p) {
     }
 }
 
-
+template<class T>
+AVLTree<T>::~AVLTree() {
+    delete m_root;
+}
 
 
 #endif //WET1DS_AVLTREE_H

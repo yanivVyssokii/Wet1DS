@@ -31,6 +31,11 @@ private:
     AVLTree<Player>* m_playersById;
 
     AVLTree<Player>* m_playersByStats;
+
+    Team* m_nextInKosher;
+
+    Team* m_prevInKosher;
+
 public:
     Team(int teamId, int point);
 
@@ -49,6 +54,10 @@ public:
     int getGamesPlayed() const;
 
     int getTopScorerGoals() const;
+
+    Team* getNextKosher() const;
+
+    Team* getPrevKosher() const;
 
     AVLTree<Player>* getPlayersById() const;
 
@@ -74,8 +83,13 @@ public:
 
     void setTopScorerGoals(int goals);
 
+    void setNextKosher(Team* newClosest);
 
+    void setPrevKosher(Team* newClosest);
+
+    ~Team();
 };
 
+bool isBiggerIdTeam(Team& p1, Team& p2);
 
 #endif //WET1DS_TEAM_H
