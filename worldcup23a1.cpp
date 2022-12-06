@@ -170,8 +170,9 @@ StatusType world_cup_t::remove_player(int playerId)
         if(playerNode->data->getClosestPlayerLeft()) {
             playerNode->data->getClosestPlayerLeft()->setClosestPlayerRight(playerNode->data->getClosestPlayerRight());
         }
-        if (playerNode->data->getClosestPlayerRight()){
-        playerNode->data->getClosestPlayerRight()->setClosestPlayerLeft(playerNode->data->getClosestPlayerLeft());
+        if (playerNode->data->getClosestPlayerRight()) {
+            playerNode->data->getClosestPlayerRight()->setClosestPlayerLeft(playerNode->data->getClosestPlayerLeft());
+        }
         m_playersById->deleteNode(playerNode,playerNode->data);
         m_playerCount--;
         if ( playerNode->data->getTeam()->getPlayerCount()==10|| playerNode->data->getTeam()->getGoalKeepersCount()==0){
@@ -214,8 +215,12 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
         }
         delete newPlayer;
         newPlayer=playerNode->data;
-        newPlayer->setClosestPlayerLeft(m_playersByStats->findClosestSmaller(m_playersByStats->find(*newPlayer))->data);
-        newPlayer->setClosestPlayerRight(m_playersByStats->findClosestBigger(m_playersByStats->find(*newPlayer))->data);
+        if(m_playersByStats->findClosestSmaller(m_playersByStats->find(*newPlayer))){
+            newPlayer->setClosestPlayerLeft(m_playersByStats->findClosestSmaller(m_playersByStats->find(*newPlayer))->data);
+        }
+        if(m_playersByStats->findClosestBigger(m_playersByStats->find(*newPlayer))) {
+            newPlayer->setClosestPlayerRight(m_playersByStats->findClosestBigger(m_playersByStats->find(*newPlayer))->data);
+        }
         if (newPlayer->getClosestPlayerLeft()) {
             newPlayer->getClosestPlayerLeft()->setClosestPlayerRight(newPlayer);
         }
