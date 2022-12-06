@@ -49,6 +49,8 @@ public:
 
     Node<T>* getRoot();
 
+    void setRoot(Node<T>* newRoot);
+
     Node<T>* createEmptyTree(Node<T>* r,int height);
 
     Node<T>* findClosestBigger(Node<T> *p);
@@ -383,6 +385,22 @@ Node<T> *AVLTree<T>::getRoot() {
 
 
 template<class T>
+Node<T>* sortedArrayToBST(Node<T>* arr[],int start, int end)
+{
+    if (start > end)
+        return nullptr;
+
+    int mid = (start + end)/2;
+    Node<T> *root = new Node<T>(arr[mid]->data->getId(),arr[mid]->data, nullptr, nullptr, nullptr);
+
+    root->left = sortedArrayToBST(arr, start,mid - 1);
+
+    root->right = sortedArrayToBST(arr, mid + 1, end);
+
+    return root;
+}
+
+template<class T>
 AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
     int sum=t1->getSize()+t2->getSize();
     Node<T>** arr1 = new Node<T>*[t1->getSize()];
@@ -418,12 +436,23 @@ AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
         height++;
     }
     AVLTree<T>* t= new AVLTree<T>(t1->m_comparator);
-    Node<T>* root = t->getRoot();
-    root=t->createEmptyTree(t->getRoot(),height);
-    int finalIndex=0;
-    t->fillInOrder(t->getRoot(),finalArr,&finalIndex,sum);
+    //Node<T>* root = t->getRoot();
+    //root=t->createEmptyTree(t->getRoot(),height);
+    //int finalIndex=0;
+    //t->fillInOrder(t->getRoot(),finalArr,&finalIndex,sum);
+
+
+
+    t->setRoot(sortedArrayToBST(finalArr,0,sum-1));
     return t;
 }
+
+
+
+
+
+
+
 
 template<class T>
 Node<T>* AVLTree<T>::createEmptyTree(Node<T>* r,int height) {
@@ -510,6 +539,12 @@ template<class T>
 AVLTree<T>::~AVLTree() {
     delete m_root;
 }
+
+template<class T>
+void AVLTree<T>::setRoot(Node<T> *newRoot) {
+    m_root=newRoot;
+}
+
 
 
 #endif //WET1DS_AVLTREE_H
