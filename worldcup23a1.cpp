@@ -27,7 +27,7 @@ StatusType world_cup_t::add_team(int teamId, int points)
             delete newTeam;
             return StatusType::FAILURE;
         }
-        m_teams->insert(nullptr,new Node<Team>(teamId,newTeam, nullptr, nullptr, nullptr),newTeam);
+        m_teams->insert(nullptr,m_teams->getRoot(),newTeam);
     } catch (...) {
         delete newTeam;
         return StatusType::ALLOCATION_ERROR;
@@ -83,13 +83,11 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
             delete newTeam;
             return StatusType::FAILURE;
         }
-        Team* teamPtr=m_teams->find(*newTeam)->data;
+        Team* teamPtr=(m_teams->find(*newTeam))->data;
         delete newTeam;
 
-        m_playersById->insert(nullptr,
-                              new Node<Player>(playerId,newPlayer, nullptr, nullptr, nullptr),newPlayer);
-        m_playersByStats->insert(nullptr,
-                              new Node<Player>(playerId,newPlayer, nullptr, nullptr, nullptr),newPlayer);
+        m_playersById->insert(nullptr,m_playersById->getRoot(),newPlayer);
+        m_playersByStats->insert(nullptr,m_playersByStats->getRoot(),newPlayer);
         teamPtr->addPlayer(newPlayer);
 
         newPlayer->setTeam(teamPtr);
@@ -110,8 +108,12 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         }
         m_playerCount++;
 
-        newPlayer->setClosestPlayerLeft(m_playersByStats->findClosestSmaller(m_playersByStats->find(*newPlayer))->data);
-        newPlayer->setClosestPlayerRight(m_playersByStats->findClosestBigger(m_playersByStats->find(*newPlayer))->data);
+        if(m_playersByStats->findClosestSmaller(m_playersByStats->find(*newPlayer))){
+            newPlayer->setClosestPlayerLeft(m_playersByStats->findClosestSmaller(m_playersByStats->find(*newPlayer))->data);
+        }
+        if(m_playersByStats->findClosestBigger(m_playersByStats->find(*newPlayer))) {
+            newPlayer->setClosestPlayerRight(m_playersByStats->findClosestBigger(m_playersByStats->find(*newPlayer))->data);
+        }
         if (newPlayer->getClosestPlayerLeft()) {
             newPlayer->getClosestPlayerLeft()->setClosestPlayerRight(newPlayer);
         }
@@ -120,7 +122,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         }
 
         if (teamPtr->getPlayerCount()==11&&teamPtr->getGoalKeepersCount()>=1){
-            m_kosherTeams->insert(nullptr,new Node<Team>(teamId,teamPtr, nullptr, nullptr, nullptr),teamPtr);
+            m_kosherTeams->insert(nullptr,m_kosherTeams->getRoot(),teamPtr);
             teamPtr->setNextKosher(m_kosherTeams->findClosestBigger(m_kosherTeams->find(*teamPtr))->data);
             teamPtr->setPrevKosher(m_kosherTeams->findClosestSmaller(m_kosherTeams->find(*teamPtr))->data);
         }
@@ -165,7 +167,10 @@ StatusType world_cup_t::remove_player(int playerId)
             playerNode->data->getTeam()->setTopScorerId(playerNode->data->getTeam()->getPlayersByStats()->
                                                              inpre(m_playersByStats->getRoot())->data->getId());
         }
-        playerNode->data->getClosestPlayerLeft()->setClosestPlayerRight(playerNode->data->getClosestPlayerRight());
+        if(playerNode->data->getClosestPlayerLeft()) {
+            playerNode->data->getClosestPlayerLeft()->setClosestPlayerRight(playerNode->data->getClosestPlayerRight());
+        }
+        if (playerNode->data->getClosestPlayerRight()){
         playerNode->data->getClosestPlayerRight()->setClosestPlayerLeft(playerNode->data->getClosestPlayerLeft());
         m_playersById->deleteNode(playerNode,playerNode->data);
         m_playerCount--;
@@ -198,7 +203,7 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
         playerNode->data->addGoals(scoredGoals);
         playerNode->data->getTeam()->setPowerRank(
                 playerNode->data->getTeam()->getPowerRank()+scoredGoals-cardsReceived);
-        m_playersByStats->insert(nullptr,playerNode,playerNode->data);
+        m_playersByStats->insert(nullptr,m_playersByStats->getRoot(),playerNode->data);
         if (playerNode->data->getGoals()>m_topScorerGoals){
             m_topScorerGoals=playerNode->data->getGoals();
             m_topScorerId=playerId;
@@ -353,9 +358,9 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
             newTeam->setTopScorerGoals(teamNode2->data->getTopScorerGoals());
             newTeam->setTopScorerId(teamNode2->data->getTopScorerId());
         }
-        m_teams->insert(nullptr,new Node<Team>(newTeamId,newTeam, nullptr, nullptr, nullptr),newTeam);
+        m_teams->insert(nullptr,m_teams->getRoot(),newTeam);
         if ( newTeam->getPlayerCount()==11|| newTeam->getGoalKeepersCount()>=1){
-            m_kosherTeams->insert(nullptr,new Node<Team>(newTeamId,newTeam, nullptr, nullptr, nullptr),newTeam);
+            m_kosherTeams->insert(nullptr,m_kosherTeams->getRoot(),newTeam);
             newTeam->setNextKosher(m_kosherTeams->findClosestBigger(m_kosherTeams->find(*newTeam))->data);
             newTeam->setPrevKosher(m_kosherTeams->findClosestSmaller(m_kosherTeams->find(*newTeam))->data);
         }

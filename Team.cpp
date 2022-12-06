@@ -51,10 +51,8 @@ void Team::increasePlayerCount(int extra) {
 }
 
 void Team::addPlayer(Player* player) {
-    m_playersById->insert(nullptr,
-                          new Node<Player>(player->getId(),player, nullptr, nullptr, nullptr),player);
-    m_playersByStats->insert(nullptr,
-                          new Node<Player>(player->getId(),player, nullptr, nullptr, nullptr),player);
+    m_playersById->insert(nullptr,m_playersById->getRoot(),player);
+    m_playersByStats->insert(nullptr,m_playersByStats->getRoot(),player);
 }
 
 AVLTree<Player> *Team::getPlayersByStats() const {

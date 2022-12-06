@@ -73,14 +73,14 @@ AVLTree<T>::AVLTree(bool (*comparator)(T& t1, T& t2)){
 
 template<class T>
 Node<T> *AVLTree<T>::find( T& target) {
-    Node<T> *temp = m_root;
+    Node<T> *temp = this->getRoot();
     while (temp != nullptr) {
         if (!m_comparator(*(temp->data),target)&&!m_comparator(target,*(temp->data)))
-            return m_root;
+            return temp;
         if (m_comparator(target,*(temp->data)))
-            temp = temp->left;
-        else
             temp = temp->right;
+        else
+            temp = temp->left;
     }
     return nullptr;
 }
@@ -448,6 +448,12 @@ int AVLTree<T>::getSize() {
 
 template<class T>
 Node<T> *AVLTree<T>::findClosestBigger(Node<T> *p) {
+    if (p->father== nullptr){
+        if (p->right== nullptr){
+            return nullptr;
+        }
+        return insuc(p->right);
+    }
     if (!p->right){
         if (p->father->left==p){
             return p->father;
@@ -472,6 +478,12 @@ Node<T> *AVLTree<T>::findClosestBigger(Node<T> *p) {
 
 template<class T>
 Node<T> *AVLTree<T>::findClosestSmaller(Node<T> *p) {
+    if (p->father== nullptr){
+        if (p->left== nullptr){
+            return nullptr;
+        }
+        return inpre(p->left);
+    }
     if (!p->left){
         if (p->father->right==p){
             return p->father;
