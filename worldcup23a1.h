@@ -35,7 +35,7 @@ private:
 
     int m_playerCount;
 
-    void findRangeTeam(int min, int max, int* size,int* ids, int* points);
+    void findRangeTeam(int min, int max, int* size,int*& ids, int*& points);
 
 public:
 	// <DO-NOT-MODIFY> {

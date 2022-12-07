@@ -152,9 +152,11 @@ StatusType world_cup_t::remove_player(int playerId)
             delete newPlayer;
             return StatusType::FAILURE;
         }
-        m_playersByStats->deleteNode(playerNode,playerNode->data);
-        playerNode->data->getTeam()->getPlayersByStats()->deleteNode(playerNode,playerNode->data);
-        playerNode->data->getTeam()->getPlayersByStats()->deleteNode(playerNode,playerNode->data);
+        m_playersByStats->deleteNode(m_playersByStats->getRoot(),playerNode->data);
+        playerNode->data->getTeam()->getPlayersByStats()->deleteNode(  playerNode->data->getTeam()
+                                                ->getPlayersByStats()->getRoot(),playerNode->data);
+        playerNode->data->getTeam()->getPlayersById()->deleteNode(playerNode->data->getTeam()
+                                                ->getPlayersById()->getRoot(),playerNode->data);
 
         playerNode->data->getTeam()->setPowerRank(
                 playerNode->data->getTeam()->getPowerRank()-playerNode->data->getGoals()+
@@ -179,10 +181,10 @@ StatusType world_cup_t::remove_player(int playerId)
         if (playerNode->data->getClosestPlayerRight()) {
             playerNode->data->getClosestPlayerRight()->setClosestPlayerLeft(playerNode->data->getClosestPlayerLeft());
         }
-        m_playersById->deleteNode(playerNode,playerNode->data);
+        m_playersById->deleteNode(m_playersById->getRoot(),playerNode->data);
         m_playerCount--;
         if ( playerNode->data->getTeam()->getPlayerCount()==10|| playerNode->data->getTeam()->getGoalKeepersCount()==0){
-            m_kosherTeams->deleteNode(m_kosherTeams->find(*playerNode->data->getTeam()), playerNode->data->getTeam());
+            m_kosherTeams->deleteNode(m_kosherTeams->getRoot(), playerNode->data->getTeam());
         }
         delete newPlayer;
     } catch (...) {
@@ -618,8 +620,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 
 
 
-
-void world_cup_t::findRangeTeam(int min, int max, int* size,int* ids, int* points) {
+void world_cup_t::findRangeTeam(int min, int max, int* size,int*& ids, int*& points) {
     Node<Team>* closestToMin;
     Node<Team>* closestToMax;
     Node<Team>* current=m_kosherTeams->getRoot();

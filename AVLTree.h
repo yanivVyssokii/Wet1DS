@@ -512,6 +512,7 @@ Node<T> *AVLTree<T>::findClosestBigger(Node<T> *p) {
         }
         return temp;
     }
+    return nullptr;
 }
 
 template<class T>
@@ -542,6 +543,7 @@ Node<T> *AVLTree<T>::findClosestSmaller(Node<T> *p) {
         }
         return temp;
     }
+    return nullptr;
 }
 
 template<class T>
