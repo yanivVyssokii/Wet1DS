@@ -34,7 +34,7 @@ template<class T>
 Node<T>::~Node() {
     delete right;
     delete left;
-    delete data;
+    //delete data;
 }
 
 

@@ -57,6 +57,8 @@ public:
 
     Node<T>* findClosestSmaller(Node<T> *p);
 
+    void deleteData(Node<T>* r);
+
     ~AVLTree();
 };
 
@@ -269,6 +271,13 @@ Node<T> * AVLTree<T>::deleteNode(Node<T> *p,T* data){
         if(p==this->m_root)
             this->m_root = nullptr;
         m_size--;
+        Node<T>* temp=p;
+        if (temp->father->right==temp){
+            temp->father->right== nullptr;
+        }
+        else{
+            temp->father->left== nullptr;
+        }
         delete p;
         return nullptr;
     }
@@ -545,6 +554,15 @@ void AVLTree<T>::setRoot(Node<T> *newRoot) {
     m_root=newRoot;
 }
 
+template<class T>
+void AVLTree<T>::deleteData(Node<T>* r) {
+    if (!r){
+        return;
+    }
+    deleteData(r->left);
+    deleteData(r->right);
+    delete r->data;
+}
 
 
 #endif //WET1DS_AVLTREE_H
