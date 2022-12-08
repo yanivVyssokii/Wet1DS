@@ -12,11 +12,11 @@ world_cup_t::world_cup_t():m_teams(new AVLTree<Team>(isBiggerIdTeam)),
 
 world_cup_t::~world_cup_t()
 {
-	delete m_playersByStats;
     m_playersById->deleteData(m_playersById->getRoot());
+	delete m_playersByStats;
     delete m_playersById;
-    delete m_kosherTeams;
     m_teams->deleteData(m_teams->getRoot());
+    delete m_kosherTeams;
     delete m_teams;
 
 }
@@ -58,8 +58,10 @@ StatusType world_cup_t::remove_team(int teamId)
             delete newTeam;
             return StatusType::FAILURE;
         }
+        Team *removedTeam=teamNode->data;
         m_teams->deleteNode(m_teams->getRoot(),teamNode->data);
         delete newTeam;
+        delete removedTeam;
     } catch (...) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -74,7 +76,8 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     if (gamesPlayed==0&&(goals>0||cards>0)){
         return StatusType::INVALID_INPUT;
     }
-    Player *newPlayer;
+    Player *newPlayer= nullptr;
+    Team *newTeam = nullptr;
     try {
         newPlayer = new Player(playerId,teamId,gamesPlayed,goals,cards,goalKeeper);
 
@@ -83,8 +86,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
             return StatusType::FAILURE;
         }
 
-        Team *newTeam = new Team(teamId, 0);
+        newTeam = new Team(teamId, 0);
         if (!m_teams->find(*newTeam)){
+            delete newPlayer;
             delete newTeam;
             return StatusType::FAILURE;
         }
@@ -150,6 +154,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         }
     } catch (...) {
         delete newPlayer;
+        delete newTeam;
         return StatusType::ALLOCATION_ERROR;
     }
 	return StatusType::SUCCESS;
@@ -168,6 +173,7 @@ StatusType world_cup_t::remove_player(int playerId)
             delete newPlayer;
             return StatusType::FAILURE;
         }
+        Player *removedPlayer=playerNode->data;
         m_playersByStats->deleteNode(m_playersByStats->getRoot(),playerNode->data);
         playerNode->data->getTeam()->getPlayersByStats()->deleteNode(  playerNode->data->getTeam()
                                                 ->getPlayersByStats()->getRoot(),playerNode->data);
@@ -214,10 +220,11 @@ StatusType world_cup_t::remove_player(int playerId)
         if (playerNode->data->getClosestPlayerRight()) {
             playerNode->data->getClosestPlayerRight()->setClosestPlayerLeft(playerNode->data->getClosestPlayerLeft());
         }
-        m_playersById->deleteNode(m_playersById->getRoot(),playerNode->data);
         if ( playerNode->data->getTeam()->getPlayerCount()==10|| playerNode->data->getTeam()->getGoalKeepersCount()==0){
             m_kosherTeams->deleteNode(m_kosherTeams->getRoot(), playerNode->data->getTeam());
         }
+        m_playersById->deleteNode(m_playersById->getRoot(),playerNode->data);
+        delete removedPlayer;
         delete newPlayer;
     } catch (...) {
         return StatusType::ALLOCATION_ERROR;
@@ -255,8 +262,9 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
                                             getPlayersByStats()->getRoot(),playerNode->data);
         playerNode->data->getTeam()->getPlayersById()->deleteNode(playerNode->data->getTeam()->
                 getPlayersById()->getRoot(),playerNode->data);
+        Player* deletePlayer = playerNode->data;
         m_playersById->deleteNode(m_playersById->getRoot(),playerNode->data);
-        //delete playerNode->data; //TODO MUST FIX THIS IS A LEAK
+        delete deletePlayer;
 
 
 
@@ -365,6 +373,7 @@ output_t<int> world_cup_t::get_num_played_games(int playerId)
             delete newPlayer;
             return output_t<int>(StatusType::FAILURE);
         }
+        delete newPlayer;
         return output_t<int>(playerNode->data->getTeam()->getGamesPlayed()-playerNode->data->getTeamGamesBeforeJoin()
                                     +playerNode->data->getGamesPlayed());
     }catch (...){
@@ -377,13 +386,15 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 	if (teamId<=0){
         return output_t<int>(StatusType::INVALID_INPUT);
     }
+    Team *newTeam= nullptr;
     try{
-        Team *newTeam = new Team(teamId,0);
+       newTeam = new Team(teamId,0);
         Node<Team>* teamNode = m_teams->find(*newTeam);
         if (!teamNode){
             delete newTeam;
             return output_t<int>(StatusType::FAILURE);
         }
+        delete newTeam;
         return output_t<int>(teamNode->data->getPowerRank()+teamNode->data->getPoints());
     }catch (...){
         return output_t<int>(StatusType::ALLOCATION_ERROR);
@@ -396,9 +407,9 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     if(newTeamId<=0||teamId1<=0||teamId2<=0||teamId1==teamId2){
         return StatusType::INVALID_INPUT;
     }
-    Team *oldTeam1;
-    Team *oldTeam2;
-    Team *newTeam;
+    Team *oldTeam1=nullptr;
+    Team *oldTeam2=nullptr;
+    Team *newTeam=nullptr;
     try{
         oldTeam1 = new Team(teamId1,0);
         Node<Team>* teamNode1 = m_teams->find(*oldTeam1);
@@ -412,6 +423,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
             delete newTeam;
             return StatusType::FAILURE;
         }
+
         AVLTree<Player>* mergedPlayersById = merge(teamNode1->data->getPlayersById(),teamNode2->data->getPlayersById());
         AVLTree<Player>* mergedPlayersByStats = merge(teamNode1->data->getPlayersByStats(),
                                                       teamNode2->data->getPlayersByStats());
@@ -438,7 +450,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
             newTeam->setTopScorerId(teamNode2->data->getTopScorerId());
             newTeam->setTopScorerCards(teamNode2->data->getTopScorerCards());
         }
-
+        Team* removedTeam1=teamNode1->data;
+        Team* removedTeam2=teamNode2->data;
         m_teams->deleteNode(m_teams->getRoot(),teamNode1->data);
         m_teams->deleteNode(m_teams->getRoot(),teamNode2->data);
         m_kosherTeams->deleteNode(m_kosherTeams->getRoot(), oldTeam1);
@@ -455,6 +468,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
             }
 
         }
+        delete removedTeam1;
+        delete removedTeam2;
         delete oldTeam1;
         delete oldTeam2;
     }catch(...){
@@ -501,13 +516,15 @@ output_t<int> world_cup_t::get_all_players_count(int teamId)
     if (teamId<0){
         return m_playerCount;
     }
+    Team *newTeam= nullptr;
     try{
-        Team *newTeam = new Team(teamId,0);
+        newTeam = new Team(teamId,0);
         Node<Team>* teamNode = m_teams->find(*newTeam);
         if (!teamNode){
             delete newTeam;
             return output_t<int>(StatusType::FAILURE);
         }
+        delete newTeam;
         return output_t<int>(teamNode->data->getPlayerCount());
     }catch(...){
         return output_t<int>(StatusType::ALLOCATION_ERROR);
@@ -668,8 +685,8 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
         }
 
         int winningId=arrId[0];
-        delete arrId;
-        delete arrPoints;
+        delete []arrId;
+        delete []arrPoints;
         return output_t<int>(winningId);
     } catch(...){
         delete arrId;

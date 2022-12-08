@@ -4,7 +4,7 @@
 
 #ifndef WET1DS_NODE_H
 #define WET1DS_NODE_H
-
+#include "iostream"
 template <class T>
 struct Node {
     int info;
@@ -31,10 +31,9 @@ Node<T>::Node():
 }
 
 template<class T>
-Node<T>::~Node() {
-    delete right;
+Node<T>::~Node(){
     delete left;
-    //delete data;
+    delete right;
 }
 
 

@@ -60,6 +60,8 @@ public:
 
     void deleteData(Node<T>* r);
 
+    void destroyRecursive(Node<T> node);
+
     ~AVLTree();
 };
 
@@ -231,7 +233,8 @@ Node<T>* AVLTree<T>::insert(Node<T>* prevNode, Node<T> *r,T* data){
         n->data = data;
         r = n;
         r->father = prevNode;
-        r->left = r->right = nullptr;
+        r->left =nullptr;
+        r->right = nullptr;
         r->height = 0;
         if (r->father== nullptr) {
             this->m_root = r;
@@ -240,12 +243,15 @@ Node<T>* AVLTree<T>::insert(Node<T>* prevNode, Node<T> *r,T* data){
         return r;
     }
 
-    if(!m_comparator(*data,*r->data)&&!m_comparator(*r->data,*data))
-        return nullptr;
-    if(!m_comparator(*data,*r->data))
-        r->left = insert(r,r->left,data);
-    else
-        r->right = insert(r,r->right,data);
+    if(!m_comparator(*data,*r->data)&&!m_comparator(*r->data,*data)) {
+        return r;
+    }
+    if(!m_comparator(*data,*r->data)) {
+        r->left = insert(r, r->left, data);
+    }
+    else {
+        r->right = insert(r, r->right, data);
+    }
 
     r->height = calheight(r);
 
@@ -341,6 +347,9 @@ Node<T>* AVLTree<T>::insuc(Node<T>* p){
 
 template<class T>
 void AVLTree<T>::inOrder(Node<T> *p, Node<T>** arr, int* index) {
+    if (!p){
+        return;
+    }
     if (p->left== nullptr&&p->right== nullptr){
         arr[*index]=p;
         *index=*index+1;
@@ -362,8 +371,6 @@ void AVLTree<T>::printInOrder(Node<T> *p) {
         return;
     }
     this->printInOrder(p->left);
-    //std::cout<<"value:"<<p->data->getId()<<std::endl;
-    //std::cout<<"height:"<<p->height<< std::endl;
     this->printInOrder(p->right);
 }
 
@@ -449,14 +456,10 @@ AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
         height++;
     }
     AVLTree<T>* t= new AVLTree<T>(t1->m_comparator);
-    //Node<T>* root = t->getRoot();
-    //root=t->createEmptyTree(t->getRoot(),height);
-    //int finalIndex=0;
-    //t->fillInOrder(t->getRoot(),finalArr,&finalIndex,sum);
-
-
-
     t->setRoot(sortedArrayToBST(finalArr,0,sum-1));
+    delete []arr1;
+    delete []arr2;
+    delete []finalArr;
     return t;
 }
 
