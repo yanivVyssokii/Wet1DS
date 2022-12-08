@@ -7,6 +7,7 @@
 #include "Node.h"
 #include "stdio.h"
 #include "wet1util.h"
+#include "iostream"
 template <class T>
 class AVLTree {
 private:
@@ -266,23 +267,26 @@ Node<T>* AVLTree<T>::insert(Node<T>* prevNode, Node<T> *r,T* data){
 
 template <class T>
 Node<T> * AVLTree<T>::deleteNode(Node<T> *p,T* data){
-
+    if (!p){
+        return nullptr;
+    }
     if(p->left == nullptr && p->right == nullptr){
-        if(p==this->m_root)
+        if(p==this->m_root) {
             this->m_root = nullptr;
+            return nullptr;
+        }
         m_size--;
         Node<T>* temp=p;
         if (temp->father->right==temp){
-            temp->father->right== nullptr;
+            temp->father->right= nullptr;
         }
         else{
-            temp->father->left== nullptr;
+            temp->father->left= nullptr;
         }
         delete p;
         return nullptr;
     }
 
-    Node<T> *t;
     Node<T> *q;
     if(m_comparator(*data,*p->data)){
         p->right = deleteNode(p->right,data);

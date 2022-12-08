@@ -7,7 +7,7 @@ include_directories(.)
 
 add_executable(Wet1DS
         AVLTree.h
-        main23a1.cpp
+        WorldCupTests.cpp
         Node.h
         Player.cpp
         Player.h

@@ -4,7 +4,6 @@
 #ifndef WET1DS_PLAYER_H
 #define WET1DS_PLAYER_H
 
-#include "Team.h"
 class Team;
 class Player {
 private:

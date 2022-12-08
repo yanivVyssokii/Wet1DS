@@ -19,6 +19,9 @@
 #include "Team.h"
 #include "wet1util.h"
 
+class Player;
+class Team;
+
 class world_cup_t {
 private:
     AVLTree<Team>* m_teams;
@@ -33,9 +36,11 @@ private:
 
     int m_topScorerGoals;
 
+    int m_topScorerCards;
+
     int m_playerCount;
 
-    void findRangeTeam(int min, int max, int* size,int*& ids, int*& points);
+    bool findRangeTeam(int min, int max, int* size,int*& ids, int*& points);
 
 public:
 	// <DO-NOT-MODIFY> {

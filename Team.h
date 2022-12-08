@@ -20,6 +20,8 @@ private:
 
     int m_topScorerId;
 
+    int m_topScorerCards;
+
     int m_topScorerGoals;
 
     int m_playerCount;
@@ -55,6 +57,8 @@ public:
 
     int getTopScorerGoals() const;
 
+    int getTopScorerCards() const;
+
     Team* getNextKosher() const;
 
     Team* getPrevKosher() const;
@@ -68,6 +72,8 @@ public:
     void setPowerRank(int powerRank);
 
     void setTopScorerId(int topScorerId);
+
+    void setTopScorerCards(int TopScorerCards);
 
     void setPlayersById(AVLTree<Player>* playersById);
 

@@ -4,10 +4,12 @@
 
 #include "Team.h"
 
-Team::Team(int teamId, int point): m_id(teamId), m_points(point), m_playerCount(0),
-                                    m_powerRank(0), m_topScorerId(NULLPLAYER), m_topScorerGoals(0),m_goalKeepersCount(0),
+Team::Team(int teamId, int point): m_id(teamId), m_points(point),m_powerRank(0),m_topScorerId(NULLPLAYER),
+                                    m_topScorerCards(0),
+                                    m_topScorerGoals(-1), m_playerCount(0),m_goalKeepersCount(0),
                                     m_gamesCounter(0), m_playersById(new AVLTree<Player>(isBiggerIdPlayer)),
-                                    m_playersByStats(new AVLTree<Player>(isBiggerStats)),m_nextInKosher(nullptr),m_prevInKosher(nullptr)
+                                    m_playersByStats(new AVLTree<Player>(isBiggerStats)),m_nextInKosher(nullptr),
+                                    m_prevInKosher(nullptr)
 {}
 
 int Team::getId() const {
@@ -25,7 +27,12 @@ int Team::getPowerRank() const {
 int Team::getTopScorerId() const {
     return m_topScorerId;
 }
-
+int Team::getTopScorerCards() const {
+    return m_topScorerCards;
+}
+void Team::setTopScorerCards(int TopScorerCards) {
+    m_topScorerCards=TopScorerCards;
+}
 int Team::getPlayerCount() const {
     return m_playerCount;
 }

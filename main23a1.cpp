@@ -22,19 +22,17 @@ void query_get_all_players(string cmd, world_cup_t *obj, int teamID);
 
 int main()
 {
-	cin.sync_with_stdio(0);
     cin >> std::boolalpha;
-	cout.sync_with_stdio(0);
-	
+
     int d1, d2, d3, d4, d5;
     bool b1;
 
     // Init
-	world_cup_t *obj = new world_cup_t();
-	
+    world_cup_t *obj = new world_cup_t();
+
     // Execute all commands in file
-	string op;
-	while (cin >> op)
+    string op;
+    while (cin >> op)
     {
         if (!op.compare("add_team")) {
             cin >> d1 >> d2;
@@ -89,33 +87,40 @@ int main()
         }
     }
 
-    // Quit 
-	delete obj;
-	return 0;
+    // Quit
+    delete obj;
+    return 0;
 }
 
-
 // Helpers
-void print(string cmd, StatusType res) 
+static const char *StatusTypeStr[] =
+        {
+                "SUCCESS",
+                "ALLOCATION_ERROR",
+                "INVALID_INPUT",
+                "FAILURE"
+        };
+
+void print(string cmd, StatusType res)
 {
-	cout << cmd << ": " << StatusTypeStr[(int) res] << endl;
+    cout << cmd << ": " << StatusTypeStr[(int) res] << endl;
 }
 
 void print(string cmd, output_t<int> res)
 {
     if (res.status() == StatusType::SUCCESS) {
-	    cout << cmd << ": " << StatusTypeStr[(int) res.status()] << ", " << res.ans() << endl;
+        cout << cmd << ": " << StatusTypeStr[(int) res.status()] << ", " << res.ans() << endl;
     } else {
-	    cout << cmd << ": " << StatusTypeStr[(int) res.status()] << endl;
+        cout << cmd << ": " << StatusTypeStr[(int) res.status()] << endl;
     }
 }
 
 void query_get_all_players(string cmd, world_cup_t *obj, int teamID)
 {
-	output_t<int> count = obj->get_all_players_count(teamID);
+    output_t<int> count = obj->get_all_players_count(teamID);
     // Allocate if okay
     int *out_mem = nullptr;
-	if (count.status() == StatusType::SUCCESS && (count.ans() > 0)) {
+    if (count.status() == StatusType::SUCCESS && (count.ans() > 0)) {
         out_mem = new int[count.ans()];
         for (int i = 0; i < count.ans(); ++i) out_mem[i] = -1;
     }
@@ -123,10 +128,10 @@ void query_get_all_players(string cmd, world_cup_t *obj, int teamID)
     StatusType status = obj->get_all_players(teamID, out_mem);
     print(cmd, status);
     if (status == StatusType::SUCCESS) {
-	    for (int i = 0; i < count.ans(); ++i)
+        for (int i = 0; i < count.ans(); ++i)
         {
-		    cout << out_mem[i] << endl;
-	    }
+            cout << out_mem[i] << endl;
+        }
     }
     delete[] out_mem;
 }
