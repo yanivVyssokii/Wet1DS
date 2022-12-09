@@ -60,17 +60,13 @@ public:
 
     void deleteData(Node<T>* r);
 
-    void destroyRecursive(Node<T> node);
+    void updateFathers(Node<T>* p);
 
     ~AVLTree();
 };
 
 template<class T>
 AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2);
-
-//
-// Created by User on 11/15/2022.
-//
 template<class T>
 AVLTree<T>::AVLTree(bool (*comparator)(T& t1, T& t2)){
     m_comparator=comparator;
@@ -277,7 +273,11 @@ Node<T> * AVLTree<T>::deleteNode(Node<T> *p,T* data){
         return nullptr;
     }
     if(p->left == nullptr && p->right == nullptr){
+        if (m_comparator(*p->data,*data)||m_comparator(*data,*p->data)){
+            return p;
+        }
         if(p==this->m_root) {
+            m_size--;
             this->m_root = nullptr;
             return nullptr;
         }
@@ -423,11 +423,36 @@ Node<T>* sortedArrayToBST(Node<T>* arr[],int start, int end)
 template<class T>
 AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
     int sum=t1->getSize()+t2->getSize();
+    if (sum==0){
+        AVLTree<T>* t=new AVLTree<T>(t1->m_comparator);
+        t->updateFathers(t->getRoot());
+        return t;
+    }
+    if (t1->getSize()==0){
+        Node<T>** arr2 = new Node<T>*[t2->getSize()];
+        int index=0;
+        t2->inOrder(t2->getRoot(),arr2,&index);
+        AVLTree<T>* t= new AVLTree<T>(t2->m_comparator);
+        t->setRoot(sortedArrayToBST(arr2,0,sum-1));
+        t->updateFathers(t->getRoot());
+        delete []arr2;
+        return t;
+    }
+    if (t2->getSize()==0){
+        Node<T>** arr1 = new Node<T>*[t1->getSize()];
+        int index=0;
+        t1->inOrder(t1->getRoot(),arr1,&index);
+        AVLTree<T>* t= new AVLTree<T>(t1->m_comparator);
+        t->setRoot(sortedArrayToBST(arr1,0,sum-1));
+        t->updateFathers(t->getRoot());
+        delete []arr1;
+        return t;
+    }
     Node<T>** arr1 = new Node<T>*[t1->getSize()];
     Node<T>** arr2 = new Node<T>*[t2->getSize()];
-    int index=0;
+    int index=-0;
     t1->inOrder(t1->getRoot(),arr1,&index);
-    index=0;
+    index=-0;
     t2->inOrder(t2->getRoot(),arr2,&index);
     Node<T>** finalArr=new Node<T>*[sum];
     int j=0,k=0;
@@ -457,6 +482,7 @@ AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
     }
     AVLTree<T>* t= new AVLTree<T>(t1->m_comparator);
     t->setRoot(sortedArrayToBST(finalArr,0,sum-1));
+    t->updateFathers(t->getRoot());
     delete []arr1;
     delete []arr2;
     delete []finalArr;
@@ -535,7 +561,7 @@ Node<T> *AVLTree<T>::findClosestSmaller(Node<T> *p) {
             return p->father;
         }
         Node<T>* temp=p->father;
-        while (temp->father!= nullptr){
+        while (!temp && temp->father!= nullptr){
             if (temp->father->right==temp){
                 return temp->father;
             }
@@ -571,6 +597,19 @@ void AVLTree<T>::deleteData(Node<T>* r) {
     deleteData(r->left);
     deleteData(r->right);
     delete r->data;
+}
+
+template<class T>
+void AVLTree<T>::updateFathers(Node<T>*p) {
+    if (p->right) {
+        p->right->father = p;
+        updateFathers(p->right);
+    }
+    if (p->left) {
+        p->left->father = p;
+        updateFathers(p->left);
+    }
+
 }
 
 

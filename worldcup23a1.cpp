@@ -6,6 +6,7 @@ world_cup_t::world_cup_t():m_teams(new AVLTree<Team>(isBiggerIdTeam)),
                             m_playersByStats(new AVLTree<Player>(isBiggerStats)),
                             m_topScorerId(0),
                             m_topScorerGoals(0),
+                            m_topScorerCards(0),
                             m_playerCount(0)
 
 {}
@@ -174,24 +175,24 @@ StatusType world_cup_t::remove_player(int playerId)
             return StatusType::FAILURE;
         }
         Player *removedPlayer=playerNode->data;
-        m_playersByStats->deleteNode(m_playersByStats->getRoot(),playerNode->data);
-        playerNode->data->getTeam()->getPlayersByStats()->deleteNode(  playerNode->data->getTeam()
-                                                ->getPlayersByStats()->getRoot(),playerNode->data);
-        playerNode->data->getTeam()->getPlayersById()->deleteNode(playerNode->data->getTeam()
-                                                ->getPlayersById()->getRoot(),playerNode->data);
+        m_playersByStats->deleteNode(m_playersByStats->getRoot(),removedPlayer);
+        removedPlayer->getTeam()->getPlayersByStats()->deleteNode(  removedPlayer->getTeam()
+                                                ->getPlayersByStats()->getRoot(),removedPlayer);
+        removedPlayer->getTeam()->getPlayersById()->deleteNode(removedPlayer->getTeam()
+                                                ->getPlayersById()->getRoot(),removedPlayer);
 
-        playerNode->data->getTeam()->setPowerRank(
-                playerNode->data->getTeam()->getPowerRank()-playerNode->data->getGoals()+
-                playerNode->data->getPlayerCards());
-        playerNode->data->getTeam()->increasePlayerCount(-1);
+        removedPlayer->getTeam()->setPowerRank(
+                removedPlayer->getTeam()->getPowerRank()-removedPlayer->getGoals()+
+                        removedPlayer->getPlayerCards());
+        removedPlayer->getTeam()->increasePlayerCount(-1);
         m_playerCount--;
-        if (playerNode->data->isGoalKeeper()) {
-            playerNode->data->getTeam()->addGoalKeeper(-1);
+        if (removedPlayer->isGoalKeeper()) {
+            removedPlayer->getTeam()->addGoalKeeper(-1);
         }
-        if (playerNode->data->getTeam()->getPlayerCount()==0){
-            playerNode->data->getTeam()->setTopScorerGoals(-1);
-            playerNode->data->getTeam()->setTopScorerId(0);
-            playerNode->data->getTeam()->setTopScorerCards(0);
+        if (removedPlayer->getTeam()->getPlayerCount()==0){
+            removedPlayer->getTeam()->setTopScorerGoals(-1);
+            removedPlayer->getTeam()->setTopScorerId(0);
+            removedPlayer->getTeam()->setTopScorerCards(0);
         }
         if (m_playerCount==0) {
             m_topScorerGoals=-1;
@@ -199,31 +200,31 @@ StatusType world_cup_t::remove_player(int playerId)
             m_topScorerCards=0;
         }
 
-        if (m_playerCount!=0&&playerNode->data->getId()==m_topScorerId){
+        if (m_playerCount!=0&&removedPlayer->getId()==m_topScorerId){
             m_topScorerGoals=m_playersByStats->inpre(m_playersByStats->getRoot())->data->getGoals();
             m_topScorerId=m_playersByStats->inpre(m_playersByStats->getRoot())->data->getId();
             m_topScorerCards=m_playersByStats->inpre(m_playersByStats->getRoot())->data->getPlayerCards();
         }
-        if (playerNode->data->getTeam()->getPlayerCount()==0&&
-                                        playerNode->data->getId()==playerNode->data->getTeam()->getTopScorerId()){
+        if (removedPlayer->getTeam()->getPlayerCount()==0&&
+                removedPlayer->getId()==removedPlayer->getTeam()->getTopScorerId()){
 
-            playerNode->data->getTeam()->setTopScorerGoals(playerNode->data->getTeam()->getPlayersByStats()->
+            removedPlayer->getTeam()->setTopScorerGoals(removedPlayer->getTeam()->getPlayersByStats()->
                                                                 inpre(m_playersByStats->getRoot())->data->getGoals());
-            playerNode->data->getTeam()->setTopScorerId(playerNode->data->getTeam()->getPlayersByStats()->
+            removedPlayer->getTeam()->setTopScorerId(removedPlayer->getTeam()->getPlayersByStats()->
                                                              inpre(m_playersByStats->getRoot())->data->getId());
-            playerNode->data->getTeam()->setTopScorerCards(playerNode->data->getTeam()->getPlayersByStats()->
+            removedPlayer->getTeam()->setTopScorerCards(removedPlayer->getTeam()->getPlayersByStats()->
                     inpre(m_playersByStats->getRoot())->data->getPlayerCards());
         }
-        if(playerNode->data->getClosestPlayerLeft()) {
-            playerNode->data->getClosestPlayerLeft()->setClosestPlayerRight(playerNode->data->getClosestPlayerRight());
+        if(removedPlayer->getClosestPlayerLeft()) {
+            removedPlayer->getClosestPlayerLeft()->setClosestPlayerRight(removedPlayer->getClosestPlayerRight());
         }
-        if (playerNode->data->getClosestPlayerRight()) {
-            playerNode->data->getClosestPlayerRight()->setClosestPlayerLeft(playerNode->data->getClosestPlayerLeft());
+        if (removedPlayer->getClosestPlayerRight()) {
+            removedPlayer->getClosestPlayerRight()->setClosestPlayerLeft(removedPlayer->getClosestPlayerLeft());
         }
-        if ( playerNode->data->getTeam()->getPlayerCount()==10|| playerNode->data->getTeam()->getGoalKeepersCount()==0){
-            m_kosherTeams->deleteNode(m_kosherTeams->getRoot(), playerNode->data->getTeam());
+        if ( removedPlayer->getTeam()->getPlayerCount()==10|| removedPlayer->getTeam()->getGoalKeepersCount()==0){
+            m_kosherTeams->deleteNode(m_kosherTeams->getRoot(), removedPlayer->getTeam());
         }
-        m_playersById->deleteNode(m_playersById->getRoot(),playerNode->data);
+        m_playersById->deleteNode(m_playersById->getRoot(),removedPlayer);
         delete removedPlayer;
         delete newPlayer;
     } catch (...) {
@@ -257,13 +258,14 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
         realPlayer->getTeam()->setPowerRank(
                 realPlayer->getTeam()->getPowerRank()+scoredGoals-cardsReceived);
 
-        m_playersByStats->deleteNode(m_playersByStats->getRoot(),playerNode->data);
-        playerNode->data->getTeam()->getPlayersByStats()->deleteNode(playerNode->data->getTeam()->
-                                            getPlayersByStats()->getRoot(),playerNode->data);
-        playerNode->data->getTeam()->getPlayersById()->deleteNode(playerNode->data->getTeam()->
-                getPlayersById()->getRoot(),playerNode->data);
-        Player* deletePlayer = playerNode->data;
-        m_playersById->deleteNode(m_playersById->getRoot(),playerNode->data);
+        Player *removedPlayer=playerNode->data;
+        m_playersByStats->deleteNode(m_playersByStats->getRoot(),removedPlayer);
+        removedPlayer->getTeam()->getPlayersByStats()->deleteNode(removedPlayer->getTeam()->
+                                            getPlayersByStats()->getRoot(),removedPlayer);
+        removedPlayer->getTeam()->getPlayersById()->deleteNode(removedPlayer->getTeam()->
+                getPlayersById()->getRoot(),removedPlayer);
+        Player* deletePlayer = removedPlayer;
+        m_playersById->deleteNode(m_playersById->getRoot(),removedPlayer);
         delete deletePlayer;
 
 
@@ -452,8 +454,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
         }
         Team* removedTeam1=teamNode1->data;
         Team* removedTeam2=teamNode2->data;
-        m_teams->deleteNode(m_teams->getRoot(),teamNode1->data);
-        m_teams->deleteNode(m_teams->getRoot(),teamNode2->data);
+        m_teams->deleteNode(m_teams->getRoot(),removedTeam1);
+        m_teams->deleteNode(m_teams->getRoot(),removedTeam2);
         m_kosherTeams->deleteNode(m_kosherTeams->getRoot(), oldTeam1);
         m_kosherTeams->deleteNode(m_kosherTeams->getRoot(), oldTeam2);
 
@@ -657,7 +659,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 
     int* arrId= nullptr;
     int* arrPoints= nullptr;
-    int size;
+    int size=1;
     if (m_kosherTeams->getSize()==0||m_kosherTeams->inpre(m_kosherTeams->getRoot())->data->getId()<minTeamId||
             m_kosherTeams->insuc(m_kosherTeams->getRoot())->data->getId()>maxTeamId) {
         return output_t<int>(StatusType::FAILURE);
