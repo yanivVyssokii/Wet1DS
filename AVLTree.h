@@ -8,6 +8,7 @@
 #include "stdio.h"
 #include "wet1util.h"
 #include "iostream"
+class Team;
 template <class T>
 class AVLTree {
 private:
@@ -52,6 +53,8 @@ public:
 
     void setRoot(Node<T>* newRoot);
 
+    void setSize(int size);
+
     Node<T>* createEmptyTree(Node<T>* r,int height);
 
     Node<T>* findClosestBigger(Node<T> *p);
@@ -61,6 +64,8 @@ public:
     void deleteData(Node<T>* r);
 
     void updateFathers(Node<T>* p);
+
+    void updateTeam(Node<T>*p,Team* team,int id);
 
     ~AVLTree();
 };
@@ -278,6 +283,7 @@ Node<T> * AVLTree<T>::deleteNode(Node<T> *p,T* data){
         }
         if(p==this->m_root) {
             m_size--;
+            delete p;
             this->m_root = nullptr;
             return nullptr;
         }
@@ -435,6 +441,7 @@ AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
         AVLTree<T>* t= new AVLTree<T>(t2->m_comparator);
         t->setRoot(sortedArrayToBST(arr2,0,sum-1));
         t->updateFathers(t->getRoot());
+        t->setSize(sum);
         delete []arr2;
         return t;
     }
@@ -445,6 +452,7 @@ AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
         AVLTree<T>* t= new AVLTree<T>(t1->m_comparator);
         t->setRoot(sortedArrayToBST(arr1,0,sum-1));
         t->updateFathers(t->getRoot());
+        t->setSize(sum);
         delete []arr1;
         return t;
     }
@@ -483,6 +491,7 @@ AVLTree<T> *merge(AVLTree<T> *t1, AVLTree<T> *t2) {
     AVLTree<T>* t= new AVLTree<T>(t1->m_comparator);
     t->setRoot(sortedArrayToBST(finalArr,0,sum-1));
     t->updateFathers(t->getRoot());
+    t->setSize(sum);
     delete []arr1;
     delete []arr2;
     delete []finalArr;
@@ -610,6 +619,23 @@ void AVLTree<T>::updateFathers(Node<T>*p) {
         updateFathers(p->left);
     }
 
+}
+
+template<class T>
+void AVLTree<T>::setSize(int size) {
+    m_size=size;
+
+}
+
+template<class T>
+void AVLTree<T>::updateTeam(Node<T>*p,Team* team,int id) {
+    if (!p){
+        return;
+    }
+    p->data->setTeam(team);
+    p->data->setTeamId(id);
+    updateTeam(p->left,team,id);
+    updateTeam(p->right,team,id);
 }
 
 

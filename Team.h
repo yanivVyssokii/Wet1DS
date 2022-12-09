@@ -93,6 +93,8 @@ public:
 
     void setPrevKosher(Team* newClosest);
 
+    void updateTeam();
+
     ~Team();
 };
 

@@ -34,7 +34,7 @@ public:
 
     int getTeamId() const;
 
-    int HowMuchGamesPlayed() const;
+    void setTeamId(int id);
 
     int getPlayerCards() const;
 
@@ -57,8 +57,6 @@ public:
     void addGoals(int goals);
 
     void addCards(int cards);
-
-    void changeGoalKeeper(bool isGoalKeeper);
 
     void setTeam(Team* newTeam);
 

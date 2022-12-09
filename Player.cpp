@@ -12,9 +12,6 @@ int Player::getTeamId() const {
     return m_teamId;
 }
 
-int Player::HowMuchGamesPlayed() const {
-    return m_gamesPlayed;
-}
 
 int Player::getPlayerCards() const {
     return m_cards;
@@ -36,9 +33,6 @@ void Player::addCards(int cards) {
     m_cards+=cards;
 }
 
-void Player::changeGoalKeeper(bool isGoalKeeper) {
-    m_goalKeeper=isGoalKeeper;
-}
 
 Player::Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper):
                 m_id(playerId), m_teamId(teamId), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards),
@@ -86,6 +80,10 @@ void Player::setClosestPlayerLeft(Player *newClosest) {
     m_closestLeft=newClosest;
 }
 
+void Player::setTeamId(int id) {
+    m_teamId=id;
+
+}
 
 
 bool isBiggerIdPlayer(Player& p1, Player& p2){

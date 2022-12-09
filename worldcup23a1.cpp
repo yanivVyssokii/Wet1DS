@@ -405,7 +405,6 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 {
-
     if(newTeamId<=0||teamId1<=0||teamId2<=0||teamId1==teamId2){
         return StatusType::INVALID_INPUT;
     }
@@ -427,6 +426,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
         }
 
         AVLTree<Player>* mergedPlayersById = merge(teamNode1->data->getPlayersById(),teamNode2->data->getPlayersById());
+        mergedPlayersById->updateTeam(mergedPlayersById->getRoot(),newTeam,newTeamId);
         AVLTree<Player>* mergedPlayersByStats = merge(teamNode1->data->getPlayersByStats(),
                                                       teamNode2->data->getPlayersByStats());
 
@@ -434,6 +434,10 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
         newTeam->setPowerRank(teamNode1->data->getPowerRank()+teamNode2->data->getPowerRank());
         newTeam->increasePlayerCount(teamNode1->data->getPlayerCount()+teamNode2->data->getPlayerCount());
         newTeam->addGoalKeeper(teamNode1->data->getGoalKeepersCount()+teamNode2->data->getGoalKeepersCount());
+        delete newTeam->getPlayersByStats();
+        delete newTeam->getPlayersById();
+        newTeam->setPlayersById(nullptr);
+        newTeam->setPlayersByStats(nullptr);
         newTeam->setPlayersById(mergedPlayersById);
         newTeam->setPlayersByStats(mergedPlayersByStats);
 
