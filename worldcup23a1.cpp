@@ -265,6 +265,14 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
         removedPlayer->getTeam()->getPlayersById()->deleteNode(removedPlayer->getTeam()->
                 getPlayersById()->getRoot(),removedPlayer);
         Player* deletePlayer = removedPlayer;
+
+        if(removedPlayer->getClosestPlayerLeft()) {
+            removedPlayer->getClosestPlayerLeft()->setClosestPlayerRight(removedPlayer->getClosestPlayerRight());
+        }
+        if (removedPlayer->getClosestPlayerRight()) {
+            removedPlayer->getClosestPlayerRight()->setClosestPlayerLeft(removedPlayer->getClosestPlayerLeft());
+        }
+
         m_playersById->deleteNode(m_playersById->getRoot(),removedPlayer);
         delete deletePlayer;
 
@@ -729,6 +737,8 @@ bool world_cup_t::findRangeTeam(int min, int max, int* size,int*& ids, int*& poi
         }
     }
     if (current->data->getId()<min){
+        closestToMin=m_kosherTeams->findClosestBigger(closestToMin);
+        /*
         while (true){
             if (current==nullptr){
                 return false;
@@ -738,7 +748,7 @@ bool world_cup_t::findRangeTeam(int min, int max, int* size,int*& ids, int*& poi
                 break;
             }
             current=current->father;
-        }
+        }*/
     }
     current=m_kosherTeams->getRoot();
     while(true){
@@ -762,6 +772,8 @@ bool world_cup_t::findRangeTeam(int min, int max, int* size,int*& ids, int*& poi
         }
     }
     if (current->data->getId()>max){
+        closestToMax=m_kosherTeams->findClosestSmaller(closestToMax);
+        /*
         while (true){
             if (!current){
                 return false;
@@ -772,6 +784,7 @@ bool world_cup_t::findRangeTeam(int min, int max, int* size,int*& ids, int*& poi
             }
             current=current->father;
         }
+         */
     }
 
     //we have min max node
