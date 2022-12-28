@@ -738,7 +738,6 @@ bool world_cup_t::findRangeTeam(int min, int max, int* size,int*& ids, int*& poi
     }
     if (current->data->getId()<min){
         closestToMin=m_kosherTeams->findClosestBigger(closestToMin);
-        /*
         while (true){
             if (current==nullptr){
                 return false;
@@ -748,7 +747,7 @@ bool world_cup_t::findRangeTeam(int min, int max, int* size,int*& ids, int*& poi
                 break;
             }
             current=current->father;
-        }*/
+        }
     }
     current=m_kosherTeams->getRoot();
     while(true){
@@ -772,8 +771,7 @@ bool world_cup_t::findRangeTeam(int min, int max, int* size,int*& ids, int*& poi
         }
     }
     if (current->data->getId()>max){
-        closestToMax=m_kosherTeams->findClosestSmaller(closestToMax);
-        /*
+
         while (true){
             if (!current){
                 return false;
@@ -784,7 +782,6 @@ bool world_cup_t::findRangeTeam(int min, int max, int* size,int*& ids, int*& poi
             }
             current=current->father;
         }
-         */
     }
 
     //we have min max node

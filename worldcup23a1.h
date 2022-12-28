@@ -17,7 +17,7 @@
 #include "AVLTree.h"
 #include "Player.h"
 #include "Team.h"
-#include "wet1util.h"
+#include "../../Desktop/wet1util.h"
 
 class Player;
 class Team;
