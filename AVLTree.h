@@ -6,7 +6,7 @@
 #define WET1DS_AVLTREE_H
 #include "Node.h"
 #include "stdio.h"
-#include "../../Desktop/wet1util.h"
+#include "wet1util.h"
 #include "iostream"
 class Team;
 template <class T>
@@ -137,6 +137,7 @@ Node<T> * AVLTree<T>::llrotation(Node<T> *n){
     tp->father=tp->right->father;
     tp->right->father=tp;
     tp->left->father=tp;
+    p->left!=nullptr? p->left->father=p : p=p;
 
     tp->right->height= calheight(tp->right);
     tp->height= calheight(tp);
@@ -160,7 +161,7 @@ Node<T> * AVLTree<T>::rrrotation(Node<T> *n){
     tp->father=tp->left->father;
     tp->left->father=tp;
     tp->right->father=tp;
-
+    p->right!=nullptr? p->right->father=p : p=p;
 
     tp->left->height= calheight(tp->left);
     tp->height= calheight(tp);
@@ -187,6 +188,8 @@ Node<T> * AVLTree<T>::rlrotation(Node<T> *n){
     tp2->father=tp2->left->father;
     tp2->left->father=tp2;
     tp2->right->father=tp2;
+    p->right!=nullptr ? p->right->father=p : p=p;
+    tp->left!=nullptr ? tp->left->father=tp : p=p;
 
     tp2->left->height= calheight(tp2->left);
     tp2->right->height= calheight(tp2->right);
@@ -211,11 +214,11 @@ Node<T> * AVLTree<T>::lrrotation(Node<T> *n){
     tp2 ->right = p;
     tp2->left = tp;
 
-
     tp2->father=tp2->right->father;
     tp2->left->father=tp2;
     tp2->right->father=tp2;
-
+    p->left!=nullptr ? p->left->father=p : p=p;
+    tp->right!=nullptr ? tp->right->father=tp : p=p;
 
     tp2->left->height= calheight(tp2->left);
     tp2->right->height= calheight(tp2->right);
@@ -289,7 +292,7 @@ Node<T> * AVLTree<T>::deleteNode(Node<T> *p,T* data){
         }
         m_size--;
         Node<T>* temp=p;
-        if (temp->father->right==temp){
+        if (temp->father->right!=nullptr&&temp->father->right->data==temp->data){
             temp->father->right= nullptr;
         }
         else{

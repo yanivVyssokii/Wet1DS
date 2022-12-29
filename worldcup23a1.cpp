@@ -95,7 +95,6 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         }
         Team* teamPtr=(m_teams->find(*newTeam))->data;
         delete newTeam;
-
         m_playersById->insert(nullptr,m_playersById->getRoot(),newPlayer);
         m_playersByStats->insert(nullptr,m_playersByStats->getRoot(),newPlayer);
         teamPtr->addPlayer(newPlayer);
@@ -186,6 +185,7 @@ StatusType world_cup_t::remove_player(int playerId)
                         removedPlayer->getPlayerCards());
         removedPlayer->getTeam()->increasePlayerCount(-1);
         m_playerCount--;
+
         if (removedPlayer->isGoalKeeper()) {
             removedPlayer->getTeam()->addGoalKeeper(-1);
         }
@@ -199,13 +199,13 @@ StatusType world_cup_t::remove_player(int playerId)
             m_topScorerId=0;
             m_topScorerCards=0;
         }
-
         if (m_playerCount!=0&&removedPlayer->getId()==m_topScorerId){
+
             m_topScorerGoals=m_playersByStats->inpre(m_playersByStats->getRoot())->data->getGoals();
             m_topScorerId=m_playersByStats->inpre(m_playersByStats->getRoot())->data->getId();
             m_topScorerCards=m_playersByStats->inpre(m_playersByStats->getRoot())->data->getPlayerCards();
         }
-        if (removedPlayer->getTeam()->getPlayerCount()==0&&
+        if (removedPlayer->getTeam()->getPlayerCount()!=0&&
                 removedPlayer->getId()==removedPlayer->getTeam()->getTopScorerId()){
 
             removedPlayer->getTeam()->setTopScorerGoals(removedPlayer->getTeam()->getPlayersByStats()->
@@ -213,7 +213,7 @@ StatusType world_cup_t::remove_player(int playerId)
             removedPlayer->getTeam()->setTopScorerId(removedPlayer->getTeam()->getPlayersByStats()->
                                                              inpre(m_playersByStats->getRoot())->data->getId());
             removedPlayer->getTeam()->setTopScorerCards(removedPlayer->getTeam()->getPlayersByStats()->
-                    inpre(m_playersByStats->getRoot())->data->getPlayerCards());
+                                        inpre(m_playersByStats->getRoot())->data->getPlayerCards());
         }
         if(removedPlayer->getClosestPlayerLeft()) {
             removedPlayer->getClosestPlayerLeft()->setClosestPlayerRight(removedPlayer->getClosestPlayerRight());
@@ -405,7 +405,7 @@ output_t<int> world_cup_t::get_team_points(int teamId)
             return output_t<int>(StatusType::FAILURE);
         }
         delete newTeam;
-        return output_t<int>(teamNode->data->getPowerRank()+teamNode->data->getPoints());
+        return output_t<int>(teamNode->data->getPoints());
     }catch (...){
         return output_t<int>(StatusType::ALLOCATION_ERROR);
     }

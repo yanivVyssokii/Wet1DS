@@ -72,6 +72,9 @@ int main()
             query_get_all_players(op, obj, d1);
         } else if (!op.compare("get_closest_player")) {
             cin >> d1 >> d2;
+            if (d1==8194 && d2==24324){
+                cout << "HI";
+            }
             print(op, obj->get_closest_player(d1, d2));
         } else if (!op.compare("knockout_winner")) {
             cin >> d1 >> d2;
