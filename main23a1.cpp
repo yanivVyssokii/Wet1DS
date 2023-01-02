@@ -75,10 +75,6 @@ int main()
             print(op, obj->get_closest_player(d1, d2));
         } else if (!op.compare("knockout_winner")) {
             cin >> d1 >> d2;
-            if (d1==5418 && d2==27219)
-            {
-                cout <<"HI"<< endl;
-            }
             print(op, obj->knockout_winner(d1, d2));
         } else {
             cout << "Unknown command: " << op << endl;
