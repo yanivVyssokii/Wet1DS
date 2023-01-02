@@ -223,9 +223,11 @@ StatusType world_cup_t::remove_player(int playerId)
         }
         if ( removedPlayer->getTeam()->getPlayerCount()==10|| removedPlayer->getTeam()->getGoalKeepersCount()==0){
             if (removedPlayer->getTeam()->getNextKosher())
-            removedPlayer->getTeam()->getNextKosher()->setPrevKosher(removedPlayer->getTeam()->getPrevKosher());
+                removedPlayer->getTeam()->getNextKosher()->setPrevKosher(removedPlayer->getTeam()->getPrevKosher());
             if (removedPlayer->getTeam()->getPrevKosher())
                 removedPlayer->getTeam()->getPrevKosher()->setNextKosher(removedPlayer->getTeam()->getNextKosher());
+            removedPlayer->getTeam()->setNextKosher(nullptr);
+            removedPlayer->getTeam()->setPrevKosher(nullptr);
             m_kosherTeams->deleteNode(m_kosherTeams->getRoot(), removedPlayer->getTeam());
         }
         m_playersById->deleteNode(m_playersById->getRoot(),removedPlayer);
@@ -711,7 +713,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
                 else {
                     arrId[index+diff]=arrId[index];
                 }
-                arrPoints[index]+=arrPoints[index+diff];
+                arrPoints[index]+=arrPoints[index+diff]+3;
                 index+=diff;
             }
             diff*=2;
