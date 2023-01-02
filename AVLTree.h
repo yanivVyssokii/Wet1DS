@@ -542,7 +542,7 @@ Node<T> *AVLTree<T>::findClosestBigger(Node<T> *p) {
             return p->father;
         }
         Node<T>* temp=p->father;
-        while (!temp && temp->father!= nullptr){
+        while (temp && temp->father!= nullptr){
             if (temp->father->left==temp){
                 return temp->father;
             }
@@ -573,7 +573,7 @@ Node<T> *AVLTree<T>::findClosestSmaller(Node<T> *p) {
             return p->father;
         }
         Node<T>* temp=p->father;
-        while (!temp && temp->father!= nullptr){
+        while (temp && temp->father!= nullptr){
             if (temp->father->right==temp){
                 return temp->father;
             }
@@ -613,6 +613,8 @@ void AVLTree<T>::deleteData(Node<T>* r) {
 
 template<class T>
 void AVLTree<T>::updateFathers(Node<T>*p) {
+    if (!p)
+        return;
     if (p->right) {
         p->right->father = p;
         updateFathers(p->right);
@@ -635,6 +637,8 @@ void AVLTree<T>::updateTeam(Node<T>*p,Team* team,int id) {
     if (!p){
         return;
     }
+    p->data->addGamesPlayed(-p->data->getTeamGamesBeforeJoin()+p->data->getTeam()->getGamesPlayed());
+    p->data->setTeamGamesBeforeJoin(0);
     p->data->setTeam(team);
     p->data->setTeamId(id);
     updateTeam(p->left,team,id);
